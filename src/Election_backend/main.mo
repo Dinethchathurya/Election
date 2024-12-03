@@ -11,13 +11,6 @@ import AdminModule "admin";
 
 actor Election {
 
-  let adminClass = AdminModule.AdminClass();
-
-  private type ElectionAdminType = {
-    name : Text;
-    role : Text;
-  };
-
   public func createElection() {};
 
   public func createElectionOfficer() {};
@@ -26,6 +19,14 @@ actor Election {
 
   public func calculateResults() {};
 
+  // Admin
+  let adminClass = AdminModule.AdminClass();
+
+  private type ElectionAdminType = {
+    name : Text;
+    role : Text;
+  };
+  
   public func createElectionAdmin(id : Principal, name : Text) : async Text {
 
     let admin : Text = adminClass.createElectionAdmins(id, name);

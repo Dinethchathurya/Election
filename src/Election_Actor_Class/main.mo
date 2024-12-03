@@ -4,9 +4,9 @@ import HashMap "mo:base/HashMap";
 import Nat "mo:base/Nat";
 import VoterModule "vote";
 
-actor class Election_Actor_Class (){
+actor class Election_Actor_Class() {
 
-    public func name() : async Nat{
+    public func name() : async Nat {
         let nameInstance = VoterModule.Vote();
 
         // Call the 'names' method and pass "kjn" as the input
@@ -15,93 +15,54 @@ actor class Election_Actor_Class (){
         return state;
     };
 
+    // data types
+    private type finalResult = {};
 
-// data types
-private type finalResult = {};
-
-// this data type for store election candidats details. 
-private type ElectionCandidate = {
-    name : Text;
-    hisParty : Text;
-    //icon : Blob; this will add later
-};
-
-
-
-// this data type for store election Officers details. 
-private type ElectionOfficer = {
-    name : Text;
-    electionCenter : Text;
-    role : Text
-};
-
-
-// Store users data.
-
-// map all election candidates key as their own name.
-var electionCandidates = HashMap.HashMap<Text, ElectionCandidate>(1, Text.equal, Text.hash);
-
-var electionOfficers = HashMap.HashMap<Principal, ElectionOfficer>(1, Principal.equal, Principal.hash);
-var votes = [];
-
-public query func getElectionCandidates (name : Text): async ElectionCandidate {
-
-    var notfundCandidate  : ElectionCandidate = {
-        name = "not found";
-        hisParty = "not found";
+    // this data type for store election candidats details.
+    private type ElectionCandidate = {
+        name : Text;
+        hisParty : Text;
+        //icon : Blob; this will add later
     };
 
-    var candidate : ElectionCandidate = switch(electionCandidates.get(name)) {
-        case(null) { notfundCandidate };
-        case(?result) { return result};
-        
-    }; 
-    return candidate;
-};
+    // Store users data.
 
-public query func getElectionOfficers (id : Principal) : async ElectionOfficer {
-    var notfundCandidate  : ElectionOfficer = {
-        name = "not found";
-        electionCenter = "not found";
-        role = "not found";
+    // map all election candidates key as their own name.
+    var electionCandidates = HashMap.HashMap<Text, ElectionCandidate>(1, Text.equal, Text.hash);
+
+    var votes = [];
+
+    public query func getElectionCandidates(name : Text) : async ElectionCandidate {
+
+        var notfundCandidate : ElectionCandidate = {
+            name = "not found";
+            hisParty = "not found";
+        };
+
+        var candidate : ElectionCandidate = switch (electionCandidates.get(name)) {
+            case (null) { notfundCandidate };
+            case (?result) { return result };
+
+        };
+        return candidate;
     };
 
-    let offier : ElectionOfficer = switch(electionOfficers.get(id)) {
-        case(null) { return notfundCandidate };
-        case(?result) { return result };
-    };
-    return offier;
-};
-  public type ElectionAdmin = {
+    public type ElectionAdmin = {
         name : Text;
         role : Text;
-  };
-
-
-
-// create functions
-
-public func createElectionCandidate (candidateName : Text, candidateParty : Text): async Text{
-    
-    let newElectionCandidate : ElectionCandidate = { 
-        name = candidateName; 
-        hisParty = candidateParty; 
     };
 
-    electionCandidates.put(candidateName, newElectionCandidate);
-    return "Success";
-};
+    // create functions
 
-public func createElectionOfficers ( id : Principal, electionOfficername: Text, electionCenter:Text ): async Text{
+    public func createElectionCandidate(candidateName : Text, candidateParty : Text) : async Text {
 
-    let electionOfficer : ElectionOfficer = { 
-        name = electionOfficername; 
-        electionCenter = electionCenter; 
-        role = "ElectionOfficer";
+        let newElectionCandidate : ElectionCandidate = {
+            name = candidateName;
+            hisParty = candidateParty;
+        };
+
+        electionCandidates.put(candidateName, newElectionCandidate);
+        return "Success";
     };
 
-    electionOfficers.put(id,electionOfficer );
-    return "Success";
-
-};
 };
