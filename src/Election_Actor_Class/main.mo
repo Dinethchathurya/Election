@@ -1,13 +1,19 @@
-import Nat "mo:base/Nat";
-import Hash "mo:base/Hash";
-import TrieMap "mo:base/TrieMap";
-import Int "mo:base/Int";
 import Text "mo:base/Text";
-import Blob "mo:base/Blob";
 import Principal "mo:base/Principal";
 import HashMap "mo:base/HashMap";
+import Nat "mo:base/Nat";
+import VoterModule "vote";
 
 actor class Election_Actor_Class (){
+
+    public func name() : async Nat{
+        let nameInstance = VoterModule.Vote();
+
+        // Call the 'names' method and pass "kjn" as the input
+        let result = nameInstance.names("kjn");
+        let state = nameInstance.state;
+        return state;
+    };
 
 
 // data types
@@ -20,11 +26,7 @@ private type ElectionCandidate = {
     //icon : Blob; this will add later
 };
 
-// this data type for store election Admin details. 
-private type ElectionAdmin = {
-    name : Text;
-    role : Text;
-};
+
 
 // this data type for store election Officers details. 
 private type ElectionOfficer = {
@@ -40,7 +42,7 @@ private type ElectionOfficer = {
 var electionCandidates = HashMap.HashMap<Text, ElectionCandidate>(1, Text.equal, Text.hash);
 
 var electionOfficers = HashMap.HashMap<Principal, ElectionOfficer>(1, Principal.equal, Principal.hash);
-var electionAdmins = HashMap.HashMap<Principal, ElectionAdmin>(1, Principal.equal, Principal.hash);
+var votes = [];
 
 public query func getElectionCandidates (name : Text): async ElectionCandidate {
 
@@ -70,20 +72,11 @@ public query func getElectionOfficers (id : Principal) : async ElectionOfficer {
     };
     return offier;
 };
+  public type ElectionAdmin = {
+        name : Text;
+        role : Text;
+  };
 
-public query func getElectionAdmins (id : Principal) : async ElectionAdmin{
-
-    var notfundCandidate  : ElectionAdmin = {
-        name = "not found";
-        role = "not found";
-    };
-
-    let admin : ElectionAdmin = switch(electionAdmins.get(id)) {
-        case(null) { return notfundCandidate };
-        case(?result) { return result};
-    }; 
-    return admin;
-};
 
 
 // create functions
@@ -111,16 +104,4 @@ public func createElectionOfficers ( id : Principal, electionOfficername: Text, 
     return "Success";
 
 };
-public func createElectionAdmins (id : Principal, adminName: Text ) :async Text{
-    let electionAdmin : ElectionAdmin = {
-        name = adminName;
-        role = "Admin";
-    };
-
-    electionAdmins.put(id, electionAdmin);
-    return "Success";
-
-};
-
-
 };
