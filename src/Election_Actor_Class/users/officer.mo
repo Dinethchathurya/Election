@@ -1,10 +1,8 @@
 import HashMap "mo:base/HashMap";
 import Principal "mo:base/Principal";
 
-// this data type for store election Officers details.
-
 module ElectionOfficerModule {
-    class ElectionOfficerClass() {
+    public class ElectionOfficerClass() {
 
         private type ElectionOfficer = {
             name : Text;
@@ -12,7 +10,7 @@ module ElectionOfficerModule {
             role : Text;
         };
 
-        var electionOfficers = HashMap.HashMap<Principal, ElectionOfficer>(1, Principal.equal, Principal.hash);
+        private var electionOfficers = HashMap.HashMap<Principal, ElectionOfficer>(1, Principal.equal, Principal.hash);
 
         public func getElectionOfficers(id : Principal) : ElectionOfficer {
             var notfundCandidate : ElectionOfficer = {
@@ -39,6 +37,13 @@ module ElectionOfficerModule {
             electionOfficers.put(id, electionOfficer);
             return "Success";
 
+        };
+        public func isElectionOfficer(id : Principal): Bool{
+            let isOfficer : Bool = switch (electionOfficers.get(id)) {
+                case (null) { return false };
+                case (?result) { return true };
+            };
+            return isOfficer;
         };
 
     };

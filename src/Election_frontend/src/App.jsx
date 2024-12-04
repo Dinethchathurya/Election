@@ -1,29 +1,35 @@
 import { useState } from 'react';
-//import { Election_backend } from 'declarations/Election_backend';
+import {Actor, HttpAgent} from "@dfinity/agent";
+import { idlFactory, Election_Actor_Class } from 'declarations/Election_Actor_Class';
+import { Principal } from "@dfinity/principal";
+import { Election_backend } from 'declarations/Election_backend';
 
 function App() {
-  const [greeting, setGreeting] = useState('');
 
-  function handleSubmit(event) {
-    // event.preventDefault();
-    // const name = event.target.elements.name.value;
-    // Election_backend.greet(name).then((greeting) => {
-    //   setGreeting(greeting);
-    // });
-    // return false;
+
+  async function createElectionFunction(event)  {
+    try {
+      let electionType= "parliment";
+      let year = "2000";
+      let newid = await Election_backend.createElection(electionType,year);
+      console.log(newid.toText());
+
+
+      // ElectionActorClass = await Actor.createActor(idlFactory, {
+      //   agent,
+      //   canisterId :id,
+      // });
+    
+    }catch (e){
+      console.log(e);
+    }
+   // const name = await ElectionActorClass.getThisYear();
   }
 
   return (
     <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#" onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <section id="greeting">{greeting}</section>
+      <label htmlFor="createIlection">Create Election</label>
+      <button onClick={createElectionFunction}>Create</button>
     </main>
   );
 }

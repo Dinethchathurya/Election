@@ -2,7 +2,7 @@ import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
 
 module CandidateModule {
-    class CandidateClass() {
+    public class CandidateClass() {
         // this data type for store election candidats details.
         private type ElectionCandidate = {
             name : Text;
@@ -10,7 +10,7 @@ module CandidateModule {
             //icon :this will add later
         };
         // map all election candidates key as their own name.
-        var electionCandidates = HashMap.HashMap<Text, ElectionCandidate>(1, Text.equal, Text.hash);
+        private var electionCandidates = HashMap.HashMap<Text, ElectionCandidate>(1, Text.equal, Text.hash);
 
         public func createElectionCandidate(candidateName : Text, candidateParty : Text) : async Text {
 

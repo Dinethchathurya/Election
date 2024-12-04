@@ -1,19 +1,49 @@
-//import Authentication "authentication";
-
 import Principal "mo:base/Principal";
 import Text "mo:base/Text";
 import Debug "mo:base/Debug";
-//import AdminModule "admin";
 import VoterModule "admin";
 import MyModule "admin";
 import HashMap "mo:base/HashMap";
+import Prelude "mo:base/Prelude";
+import Error "mo:base/Error";
 import AdminModule "admin";
+import ElectionActorClass "../Election_Actor_Class/main";
+import Cycles "mo:base/ExperimentalCycles";
+
 
 actor Election {
 
-  public func createElection() {};
+  private var mapOfElections = HashMap.HashMap<Principal, ElectionActorClass.Election_Actor_Class>(1, Principal.equal, Principal.hash);
 
-  public func createElectionOfficer() {};
+  public shared (msg) func createElection(electionType : Text, year : Text): async Principal {
+    //let isAdmin : Bool = adminClass.isAdmin(msg.caller);
+    Debug.print(debug_show(Cycles.balance()));
+    Cycles.add(100_500_000_000);
+    let newElection = await ElectionActorClass.Election_Actor_Class(electionType, year);
+
+    let electionCanisterId : Principal = await newElection.getCanisterId();
+    
+    mapOfElections.put(electionCanisterId, newElection);
+
+    return electionCanisterId;
+  };
+
+  private func getElection_Actor_Class(electionId : Principal): async ElectionActorClass.Election_Actor_Class {
+    let electionClass : ElectionActorClass.Election_Actor_Class = switch(mapOfElections.get(electionId)) {
+      case(null) { return  throw Error.reject("Election not found for this electionId"); };
+      case(?result) { return result};
+    };
+    return electionClass;
+  };
+
+  public func createElectionOfficer(electionId : Principal, electionOfficerId : Principal, electionOfficerName : Text, electionCenter :Text ): async Text {
+    let electionClass : ElectionActorClass.Election_Actor_Class = await getElection_Actor_Class(electionId);
+    
+    let newOfficer :Text = await electionClass.createElectionOfficerForThisElection(electionOfficerId,electionOfficerName, electionCenter);
+    return newOfficer;
+  };
+
+  public func createCandidate() {};
 
   public func checkDataIntegrity() {};
 
@@ -26,7 +56,7 @@ actor Election {
     name : Text;
     role : Text;
   };
-  
+
   public func createElectionAdmin(id : Principal, name : Text) : async Text {
 
     let admin : Text = adminClass.createElectionAdmins(id, name);
@@ -46,11 +76,9 @@ actor Election {
     return result;
   };
 
-  public shared query func isAdmin() : async Bool {
-
-    let id : Principal = Principal.fromText("snjqz-ro3v5-a2rhs-y4jte-aaxgh-tj32a-q7w33-zudey-gm3hc-zznfb-iqe");
-
-    let result : Bool = adminClass.isAdmin(id);
+  public shared query func isAdmin(caller : Principal) : async Bool {
+    //let id : Principal = Principal.fromText("snjqz-ro3v5-a2rhs-y4jte-aaxgh-tj32a-q7w33-zudey-gm3hc-zznfb-iqe");
+    let result : Bool = adminClass.isAdmin(caller);
     return result;
   };
 
