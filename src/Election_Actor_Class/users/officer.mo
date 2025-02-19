@@ -1,35 +1,30 @@
 import HashMap "mo:base/HashMap";
 import Principal "mo:base/Principal";
+import Type "../types/Type";
 
 module ElectionOfficerModule {
     public class ElectionOfficerClass() {
 
-        private type ElectionOfficer = {
-            name : Text;
-            electionCenter : Text;
-            role : Text;
-        };
+        private var electionOfficers = HashMap.HashMap<Principal, Type.ElectionOfficer>(1, Principal.equal, Principal.hash);
 
-        private var electionOfficers = HashMap.HashMap<Principal, ElectionOfficer>(1, Principal.equal, Principal.hash);
-
-        public func getElectionOfficers(id : Principal) : ElectionOfficer {
-            var notfundCandidate : ElectionOfficer = {
+        public func getElectionOfficers(id : Principal) : Type.ElectionOfficer {
+            var notFundCandidate : Type.ElectionOfficer = {
                 name = "not found";
                 electionCenter = "not found";
                 role = "not found";
             };
 
-            let offier : ElectionOfficer = switch (electionOfficers.get(id)) {
-                case (null) { return notfundCandidate };
+            let officer : Type.ElectionOfficer = switch (electionOfficers.get(id)) {
+                case (null) { return notFundCandidate };
                 case (?result) { return result };
             };
-            return offier;
+            return officer;
         };
 
-        public func createElectionOfficers(id : Principal, electionOfficername : Text, electionCenter : Text) : async Text {
+        public func createElectionOfficers(id : Principal, electionOfficerName : Text, electionCenter : Text) : async Text {
 
-            let electionOfficer : ElectionOfficer = {
-                name = electionOfficername;
+            let electionOfficer : Type.ElectionOfficer = {
+                name = electionOfficerName;
                 electionCenter = electionCenter;
                 role = "ElectionOfficer";
             };

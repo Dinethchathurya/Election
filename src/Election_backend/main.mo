@@ -9,11 +9,12 @@ import Error "mo:base/Error";
 import AdminModule "admin";
 import ElectionActorClass "../Election_Actor_Class/main";
 import Cycles "mo:base/ExperimentalCycles";
-
+import List "mo:base/List";
 
 actor Election {
 
   private var mapOfElections = HashMap.HashMap<Principal, ElectionActorClass.Election_Actor_Class>(1, Principal.equal, Principal.hash);
+  var principals : List.List<Principal> = List.nil<Principal>();
 
   public shared (msg) func createElection(electionType : Text, year : Text): async Principal {
     //let isAdmin : Bool = adminClass.isAdmin(msg.caller);
@@ -24,6 +25,7 @@ actor Election {
     let electionCanisterId : Principal = await newElection.getCanisterId();
     
     mapOfElections.put(electionCanisterId, newElection);
+    principals := List.push(electionCanisterId, principals);
 
     return electionCanisterId;
   };
@@ -78,11 +80,16 @@ actor Election {
 
 
   //candidate
-
   public func createCandidate() {};
 
   public func checkDataIntegrity() {};
 
   public func calculateResults() {};
+
+  //election
+  //get all elections
+  public query func getAllElectionPrincipals() : async List.List<Principal> {
+    return principals;
+  }
 
 };
