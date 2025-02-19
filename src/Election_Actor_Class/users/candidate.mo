@@ -3,7 +3,7 @@ import Text "mo:base/Text";
 
 module CandidateModule {
     public class CandidateClass() {
-        // this data type for store election candidats details.
+        // this data type for store election candidate details.
         private type ElectionCandidate = {
             name : Text;
             hisParty : Text;

@@ -43,12 +43,6 @@ actor Election {
     return newOfficer;
   };
 
-  public func createCandidate() {};
-
-  public func checkDataIntegrity() {};
-
-  public func calculateResults() {};
-
   // Admin
   let adminClass = AdminModule.AdminClass();
 
@@ -70,7 +64,7 @@ actor Election {
 
   public shared query func name() : async ElectionAdminType {
 
-    let id : Principal = Principal.fromText("snjqz-ro3v5-a2rhs-y4jte-aaxgh-tj32a-q7w33-zudey-gm3hc-zznfb-iqe");
+    let id : Principal = Principal.fromText("a5uvy-7ojr2-iyefm-n22mq-hxn6l-l6dbq-5n2yy-b67g2-6apqn-u5u5u-uqe");
 
     let result : ElectionAdminType = adminClass.getElectionAdmins(id);
     return result;
@@ -81,5 +75,14 @@ actor Election {
     let result : Bool = adminClass.isAdmin(caller);
     return result;
   };
+
+
+  //candidate
+
+  public func createCandidate() {};
+
+  public func checkDataIntegrity() {};
+
+  public func calculateResults() {};
 
 };
