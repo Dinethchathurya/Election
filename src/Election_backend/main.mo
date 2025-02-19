@@ -38,10 +38,10 @@ actor Election {
     return electionClass;
   };
 
-  public func createElectionOfficer(electionId : Principal, electionOfficerId : Principal, electionOfficerName : Text, electionCenter :Text ): async Text {
+  public func createElectionOfficer(electionId : Principal, electionOfficerId : Principal, electionOfficerName : Text, pollingStation:Text, pollingDivision : Text, district : Text ): async Text {
     let electionClass : ElectionActorClass.Election_Actor_Class = await getElection_Actor_Class(electionId);
     
-    let newOfficer :Text = await electionClass.createElectionOfficerForThisElection(electionOfficerId,electionOfficerName, electionCenter);
+    let newOfficer :Text = await electionClass.createElectionOfficerForThisElection(electionOfficerId,electionOfficerName,pollingStation, pollingDivision, district );
     return newOfficer;
   };
 
@@ -59,7 +59,7 @@ actor Election {
     if (admin == "Success") {
       return "success";
     } else {
-      return "faild";
+      return "fail";
     }
 
   };

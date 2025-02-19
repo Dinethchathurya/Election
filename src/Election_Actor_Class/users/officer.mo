@@ -1,5 +1,6 @@
 import HashMap "mo:base/HashMap";
 import Principal "mo:base/Principal";
+import Text "mo:base/Text";
 import Type "../types/Type";
 
 module ElectionOfficerModule {
@@ -10,8 +11,11 @@ module ElectionOfficerModule {
         public func getElectionOfficers(id : Principal) : Type.ElectionOfficer {
             var notFundCandidate : Type.ElectionOfficer = {
                 name = "not found";
-                electionCenter = "not found";
                 role = "not found";
+                pollingStation = "not found";
+                pollingDivision = "not found";
+                district = "not found";
+
             };
 
             let officer : Type.ElectionOfficer = switch (electionOfficers.get(id)) {
@@ -21,11 +25,13 @@ module ElectionOfficerModule {
             return officer;
         };
 
-        public func createElectionOfficers(id : Principal, electionOfficerName : Text, electionCenter : Text) : async Text {
+        public func createElectionOfficers(id : Principal, electionOfficerName : Text, pollingStation:Text, pollingDivision : Text, district : Text) : async Text {
 
             let electionOfficer : Type.ElectionOfficer = {
                 name = electionOfficerName;
-                electionCenter = electionCenter;
+                pollingStation = pollingStation;
+                pollingDivision = pollingDivision;
+                district = district;
                 role = "ElectionOfficer";
             };
 
@@ -33,6 +39,7 @@ module ElectionOfficerModule {
             return "Success";
 
         };
+
         public func isElectionOfficer(id : Principal): Bool{
             let isOfficer : Bool = switch (electionOfficers.get(id)) {
                 case (null) { return false };

@@ -27,8 +27,8 @@ actor class Election_Actor_Class(electionType: Text, year : Text) = this{
     // election Officer related
     let electionOfficerModuleInstance = ElectionOfficerModule.ElectionOfficerClass();
     
-    public func createElectionOfficerForThisElection(id : Principal, electionOfficerName : Text, electionCenter : Text) : async Text{
-        let officer : Text = await electionOfficerModuleInstance.createElectionOfficers(id, electionOfficerName, electionCenter);
+    public func createElectionOfficerForThisElection(id : Principal, electionOfficerName : Text, pollingStation:Text, pollingDivision : Text, district : Text) : async Text{
+        let officer : Text = await electionOfficerModuleInstance.createElectionOfficers(id, electionOfficerName,  pollingStation, pollingDivision, district);
         return officer;
     };
 

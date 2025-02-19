@@ -11,8 +11,10 @@ module {
 
   public type ElectionOfficer = {
       name : Text;
-      electionCenter : Text;
       role : Text;
+      pollingStation : Text;
+      pollingDivision : Text;
+      district : Text;
   };
 
   public type Vote = {
