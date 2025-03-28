@@ -1,12 +1,10 @@
 import Text "mo:base/Text";
 import Principal "mo:base/Principal";
-import HashMap "mo:base/HashMap";
-import Nat "mo:base/Nat";
 import Bool "mo:base/Bool";
-import ElectionOfficerModule  "users/officer";
-import List "mo:base/List";
+import ElectionOfficerModule "users/officer";
 import CandidateModule "users/candidate";
 import Type "./types/Type";
+import VoteModule "vote";
 
 actor class Election_Actor_Class(electionType: Text, year : Text) = this{
 
@@ -55,7 +53,6 @@ actor class Election_Actor_Class(electionType: Text, year : Text) = this{
     };
 
     //voter related
-
-
-
+    let voteModuleInstance = VoteModule.VoteClass();
+    
 };
