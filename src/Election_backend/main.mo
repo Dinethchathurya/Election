@@ -1,41 +1,29 @@
 import Principal "mo:base/Principal";
 import Text "mo:base/Text";
-import Debug "mo:base/Debug";
-import VoterModule "admin";
-import MyModule "admin";
 import HashMap "mo:base/HashMap";
-import Prelude "mo:base/Prelude";
-import Error "mo:base/Error";
-import AdminModule "admin";
+import AdminModule "admin/admin";
 import ElectionActorClass "../Election_Actor_Class/main";
-import Cycles "mo:base/ExperimentalCycles";
 import List "mo:base/List";
+import ElectionModule "election/election"
 
 actor Election {
 
   private var mapOfElections = HashMap.HashMap<Principal, ElectionActorClass.Election_Actor_Class>(1, Principal.equal, Principal.hash);
   var principals : List.List<Principal> = List.nil<Principal>();
 
+  //election
+  let electionClass = ElectionModule.ElectionClass();
+
+  //create Elections functions using election module 
   public shared (msg) func createElection(electionType : Text, year : Text): async Principal {
-    //let isAdmin : Bool = adminClass.isAdmin(msg.caller);
-    Debug.print(debug_show(Cycles.balance()));
-    Cycles.add(100_500_000_000);
-    let newElection = await ElectionActorClass.Election_Actor_Class(electionType, year);
-
-    let electionCanisterId : Principal = await newElection.getCanisterId();
-    
-    mapOfElections.put(electionCanisterId, newElection);
-    principals := List.push(electionCanisterId, principals);
-
-    return electionCanisterId;
+    let newElection: Principal = await electionClass.createElectionFunction(electionType, year, msg.caller);
+    return newElection;
   };
 
+
   private func getElection_Actor_Class(electionId : Principal): async ElectionActorClass.Election_Actor_Class {
-    let electionClass : ElectionActorClass.Election_Actor_Class = switch(mapOfElections.get(electionId)) {
-      case(null) { return  throw Error.reject("Election not found for this electionId"); };
-      case(?result) { return result};
-    };
-    return electionClass;
+    let thisElectionClass : ElectionActorClass.Election_Actor_Class = await electionClass.getElection_Actor_ClassFunction(electionId);
+    return thisElectionClass;
   };
 
   public func createElectionOfficer(electionId : Principal, electionOfficerId : Principal, electionOfficerName : Text, pollingStation:Text, pollingDivision : Text, district : Text ): async Text {
@@ -44,6 +32,15 @@ actor Election {
     let newOfficer :Text = await electionClass.createElectionOfficerForThisElection(electionOfficerId,electionOfficerName,pollingStation, pollingDivision, district );
     return newOfficer;
   };
+
+
+
+  //get all elections
+  public shared func getAllElectionPrincipals() : async List.List<Principal> {
+    let principalsList: List.List<Principal> = await electionClass.getAllElectionPrincipalsFunction();
+    return principalsList;
+  };
+
 
   // Admin
   let adminClass = AdminModule.AdminClass();
@@ -85,11 +82,5 @@ actor Election {
   public func checkDataIntegrity() {};
 
   public func calculateResults() {};
-
-  //election
-  //get all elections
-  public query func getAllElectionPrincipals() : async List.List<Principal> {
-    return principals;
-  }
 
 };

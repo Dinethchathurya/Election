@@ -53,6 +53,6 @@ actor class Election_Actor_Class(electionType: Text, year : Text) = this{
     };
 
     //voter related
-    let voteModuleInstance = VoteModule.VoteClass();
+    //let voteModuleInstance = VoteModule.VoteClass();
     
 };

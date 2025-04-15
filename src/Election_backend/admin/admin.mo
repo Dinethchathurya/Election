@@ -1,26 +1,22 @@
 import HashMap "mo:base/HashMap";
 import Principal "mo:base/Principal";
+import Types "../utils/types";
 
 module AdminModule {
 
     public class AdminClass() {
 
-        private type ElectionAdminType = {
-            name : Text;
-            role : Text;
-        };
-
         // store admins in election commision.
-        private var mapOfElectionAdmins = HashMap.HashMap<Principal, ElectionAdminType>(1, Principal.equal, Principal.hash);
+        private var mapOfElectionAdmins = HashMap.HashMap<Principal, Types.ElectionAdminType>(1, Principal.equal, Principal.hash);
 
-        public func getElectionAdmins(id : Principal) : ElectionAdminType {
+        public func getElectionAdmins(id : Principal) : Types.ElectionAdminType {
 
-            var notfundCandidate : ElectionAdminType = {
+            var notfundCandidate : Types.ElectionAdminType = {
                 name = "not found";
                 role = "not found";
             };
 
-            let admin : ElectionAdminType = switch (mapOfElectionAdmins.get(id)) {
+            let admin : Types.ElectionAdminType = switch (mapOfElectionAdmins.get(id)) {
                 case (null) { return notfundCandidate };
                 case (?result) { return result };
             };
@@ -28,7 +24,7 @@ module AdminModule {
         };
 
         public func createElectionAdmins(id : Principal, adminName : Text) : Text {
-            let electionAdmin : ElectionAdminType = {
+            let electionAdmin : Types.ElectionAdminType = {
                 name = adminName;
                 role = "Admin";
             };
