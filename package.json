@@ -16,17 +16,16 @@
     "src/Election_frontend"
   ],
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.4",
+
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.3",
-    "tailwindcss": "^4.1.4",
+
     "typescript": "^5.8.2",
     "vite-plugin-svgr": "^4.3.0"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.17",
     "@fullcalendar/interaction": "^6.1.17",
-    "@fullcalendar/list": "^6.1.17",
-    "@tailwindcss/vite": "^4.1.4"
+    "@fullcalendar/list": "^6.1.17"
   }
 }

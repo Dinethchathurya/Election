@@ -1,42 +1,58 @@
-import { useState } from 'react';
-import {Actor, HttpAgent} from "@dfinity/agent";
-import { idlFactory, Election_Actor_Class } from 'declarations/Election_Actor_Class';
-import { Principal } from "@dfinity/principal";
-import { Election_backend } from 'declarations/Election_backend';
-import './index.css';
+
+// import { useEffect } from 'react';
+// import { Election_backend } from 'declarations/Election_backend';
+// import AdminHomePage from '../src/pages/admin/AdminHomePage';
+
+// function App() {
+//   async function createElectionFunction() {
+//     try {
+//       let electionType = "parliment";
+//       let year = "2000";
+//       let newid = await Election_backend.createElection(electionType, year);
+//       console.log(newid.toText());
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   }
+
+//   // Optional: Load Chart.js or Bootstrap JS if you need dynamic behaviors
+//   useEffect(() => {
+//     // Example: chart init or Bootstrap dropdown, etc.
+//   }, []);
+
+//   return (
+//       <AdminHomePage />
+//   );
+// }
+
+// export default App;
+
+
+
+
+
+
+import { useEffect } from "react";
+import AdminHomePage from "./pages/admin/adminHomePage";
+
 
 function App() {
+  useEffect(() => {
+    // Apply stored theme on load
+    const storedTheme = localStorage.getItem("theme") || "auto";
+    setTheme(storedTheme);
+  }, []);
 
-  async function createElectionFunction(event)  {
-    try {
-      let electionType= "parliment";
-      let year = "2000";
-      let newid = await Election_backend.createElection(electionType,year);
-      console.log(newid.toText());
-
-    }catch (e){
-      console.log(e);
+  const setTheme = (theme) => {
+    if (theme === "auto") {
+      document.documentElement.removeAttribute("data-bs-theme");
+    } else {
+      document.documentElement.setAttribute("data-bs-theme", theme);
     }
+    localStorage.setItem("theme", theme);
+  };
 
-  }
-
-  return (
-    <main>
-      <label htmlFor="createIlection">Create Election</label>
-      <button onClick={createElectionFunction}>Create</button>
-
-      <h1 className="text-2xl font-bold underline text-red-500 ">Hello world!</h1>
-      <div className="p-4">
-      <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
-        Click Me
-      </button>
-
-      <h1 className="bg-green-500 text-white text-3xl p-4">Tailwind Test</h1>
-
-      <div className="bg-black text-white p-6">Tailwind Working ✅</div>
-    </div>
-    </main>
-  );
+  return <AdminHomePage setTheme={setTheme} />;
 }
 
 export default App;
