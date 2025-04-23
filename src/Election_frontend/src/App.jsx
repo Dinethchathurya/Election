@@ -33,7 +33,7 @@
 
 
 import { useEffect } from "react";
-import AdminHomePage from "./pages/admin/adminHomePage";
+import AdminHomePage from "./pages/admin/AdminHomePage";
 
 
 function App() {
