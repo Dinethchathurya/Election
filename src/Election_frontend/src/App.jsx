@@ -1,36 +1,4 @@
 
-// import { useEffect } from 'react';
-// import { Election_backend } from 'declarations/Election_backend';
-// import AdminHomePage from '../src/pages/admin/AdminHomePage';
-
-// function App() {
-//   async function createElectionFunction() {
-//     try {
-//       let electionType = "parliment";
-//       let year = "2000";
-//       let newid = await Election_backend.createElection(electionType, year);
-//       console.log(newid.toText());
-//     } catch (e) {
-//       console.log(e);
-//     }
-//   }
-
-//   // Optional: Load Chart.js or Bootstrap JS if you need dynamic behaviors
-//   useEffect(() => {
-//     // Example: chart init or Bootstrap dropdown, etc.
-//   }, []);
-
-//   return (
-//       <AdminHomePage />
-//   );
-// }
-
-// export default App;
-
-
-
-
-
 
 import { useEffect } from "react";
 import AdminHomePage from "./pages/admin/AdminHomePage";
