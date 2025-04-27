@@ -1,7 +1,7 @@
 
 
 import { useEffect } from "react";
-import AdminHomePage from "./pages/admin/AdminHomePage";
+import AdminHomePage from "./pages/admin/AdminLayout";
 
 
 function App() {

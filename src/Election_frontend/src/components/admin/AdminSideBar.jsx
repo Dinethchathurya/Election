@@ -45,7 +45,7 @@ const AdminSideBar = () => {
               >
                 <use xlinkHref="#speedometer2" />
               </svg>
-              Dashboard
+              Create Election
             </a>
           </li>
           <li>
@@ -58,7 +58,7 @@ const AdminSideBar = () => {
               >
                 <use xlinkHref="#table" />
               </svg>
-              Orders
+              Create Admin
             </a>
           </li>
           <li>
@@ -71,7 +71,7 @@ const AdminSideBar = () => {
               >
                 <use xlinkHref="#grid" />
               </svg>
-              Products
+              Create Officer
             </a>
           </li>
           <li>
@@ -84,7 +84,7 @@ const AdminSideBar = () => {
               >
                 <use xlinkHref="#people-circle" />
               </svg>
-              Customers
+              Create candidate
             </a>
           </li>
         </ul>      
