@@ -1,33 +1,34 @@
-const CreateElectionPage = () => {
+const CreateAdminPage = () => {
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-body text-body">
+      <h2 className="mb-4 fw-bold text-body  mt-4">Create Admin</h2>
       <form className="row g-3 bg-body text-body">
         <div className="col-md-6">
           <label htmlFor="inputEmail4" className="form-label">
-            Email
+            First Name
           </label>
-          <input type="email" className="form-control" id="inputEmail4" />
+          <input type="name" className="form-control" id="inputEmail4" placeholder="First Name"/>
         </div>
         <div className="col-md-6">
           <label htmlFor="inputPassword4" className="form-label">
-            Password
+            Last Name
           </label>
-          <input type="password" className="form-control" id="inputPassword4" />
+          <input type="text" className="form-control" id="inputPassword4"placeholder="Last Name" />
         </div>
         <div className="col-12">
           <label htmlFor="inputAddress" className="form-label">
-            Address
+            Email
           </label>
           <input
-            type="text"
+            type="email"
             className="form-control"
             id="inputAddress"
-            placeholder="1234 Main St"
+            placeholder="abc2@gmail.com"
           />
         </div>
         <div className="col-12">
           <label htmlFor="inputAddress2" className="form-label">
-            Address 2
+            Address 1
           </label>
           <input
             type="text"
@@ -36,34 +37,16 @@ const CreateElectionPage = () => {
             placeholder="Apartment, studio, or floor"
           />
         </div>
-        <div className="col-md-6">
-          <label htmlFor="inputCity" className="form-label">
-            City
-          </label>
-          <input type="text" className="form-control" id="inputCity" />
-        </div>
-        <div className="col-md-4 bg-body text-body">
-          <label htmlFor="inputState" className="form-label">
-            State
-          </label>
-          <select id="inputState" className="form-select">
-            <option >Choose...</option>
-            <option>...</option>
-          </select>
-        </div>
-        <div className="col-md-2">
-          <label htmlFor="inputZip" className="form-label">
-            Zip
-          </label>
-          <input type="text" className="form-control" id="inputZip" />
-        </div>
         <div className="col-12">
-          <div className="form-check">
-            <input className="form-check-input" type="checkbox" id="gridCheck" />
-            <label className="form-check-label" htmlFor="gridCheck">
-              Check me out
-            </label>
-          </div>
+          <label htmlFor="inputAddress" className="form-label">
+            Internet Identity
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="inputAddress"
+            placeholder="Internet Identity"
+          />
         </div>
         <div className="col-12">
           <button type="submit" className="btn btn-primary">
@@ -74,4 +57,4 @@ const CreateElectionPage = () => {
     </main>
   );
 };
-export default CreateElectionPage;
+export default CreateAdminPage;

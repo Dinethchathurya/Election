@@ -1,78 +1,78 @@
 const CreateOfficer = () => {
+  const districts = [
+    "Colombo", "Gampaha", "Kalutara",
+    "Kandy", "Matale", "Nuwara Eliya",
+    "Galle", "Matara", "Hambantota",
+    "Jaffna", "Wanni",
+    "Batticaloa", "Digamadulla", "Trincomalee",
+    "Kurunegala", "Puttalam",
+    "Anuradhapura", "Polonnaruwa",
+    "Badulla", "Monaragala",
+    "Ratnapura", "Kegalle"
+  ];
+
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-body text-body">
-      <h2>Create Officer</h2>
-      <form className="row g-3 bg-body text-body">
+      <h2 className="mb-4 fw-bold text-body mt-4">Create Officer</h2>
+
+      <form className="row g-4 p-4 bg-body text-body rounded">
         <div className="col-md-6">
-          <label htmlFor="inputEmail4" className="form-label">
-            Email
+          <label htmlFor="electionId" className="form-label">
+            Election ID
           </label>
-          <input type="email" className="form-control" id="inputEmail4" />
+          <input type="text" className="form-control" id="electionId" placeholder="Enter Election ID" />
         </div>
+
         <div className="col-md-6">
-          <label htmlFor="inputPassword4" className="form-label">
-            Password
+          <label htmlFor="officerId" className="form-label">
+            Election Officer ID
           </label>
-          <input type="password" className="form-control" id="inputPassword4" />
+          <input type="text" className="form-control" id="officerId" placeholder="Enter Officer ID" />
         </div>
+
         <div className="col-12">
-          <label htmlFor="inputAddress" className="form-label">
-            Address
+          <label htmlFor="officerName" className="form-label">
+            Election Officer Name
           </label>
-          <input
-            type="text"
-            className="form-control"
-            id="inputAddress"
-            placeholder="1234 Main St"
-          />
+          <input type="text" className="form-control" id="officerName" placeholder="Full Name" />
         </div>
-        <div className="col-12">
-          <label htmlFor="inputAddress2" className="form-label">
-            Address 2
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="inputAddress2"
-            placeholder="Apartment, studio, or floor"
-          />
-        </div>
+
         <div className="col-md-6">
-          <label htmlFor="inputCity" className="form-label">
-            City
+          <label htmlFor="pollingStation" className="form-label">
+            Polling Station
           </label>
-          <input type="text" className="form-control" id="inputCity" />
+          <input type="text" className="form-control" id="pollingStation" placeholder="Station Name" />
         </div>
-        <div className="col-md-4 bg-body text-body">
-          <label htmlFor="inputState" className="form-label">
-            State
+
+        <div className="col-md-6">
+          <label htmlFor="pollingDivision" className="form-label">
+            Polling Division
           </label>
-          <select id="inputState" className="form-select">
-            <option >Choose...</option>
-            <option>...</option>
+          <input type="text" className="form-control" id="pollingDivision" placeholder="Division Name" />
+        </div>
+
+        <div className="col-md-6">
+          <label htmlFor="district" className="form-label">
+            District
+          </label>
+          <select id="district" className="form-select">
+            <option disabled selected>Choose District</option>
+            {districts.map((district, index) => (
+              <option key={index} value={district}>
+                {district}
+              </option>
+            ))}
           </select>
         </div>
-        <div className="col-md-2">
-          <label htmlFor="inputZip" className="form-label">
-            Zip
-          </label>
-          <input type="text" className="form-control" id="inputZip" />
-        </div>
-        <div className="col-12">
-          <div className="form-check">
-            <input className="form-check-input" type="checkbox" id="gridCheck" />
-            <label className="form-check-label" htmlFor="gridCheck">
-              Check me out
-            </label>
-          </div>
-        </div>
+
         <div className="col-12">
           <button type="submit" className="btn btn-primary">
-            Sign in
+            Create Officer
           </button>
         </div>
       </form>
     </main>
   );
 };
+
 export default CreateOfficer;

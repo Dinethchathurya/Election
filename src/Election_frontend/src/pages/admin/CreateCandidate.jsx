@@ -1,77 +1,43 @@
-const CreateElectionPage = () => {
+const CreateCandidatePage = () => {
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-body text-body">
-      <form className="row g-3 bg-body text-body">
-        <div className="col-md-6">
-          <label htmlFor="inputEmail4" className="form-label">
-            Email
-          </label>
-          <input type="email" className="form-control" id="inputEmail4" />
-        </div>
-        <div className="col-md-6">
-          <label htmlFor="inputPassword4" className="form-label">
-            Password
-          </label>
-          <input type="password" className="form-control" id="inputPassword4" />
-        </div>
-        <div className="col-12">
-          <label htmlFor="inputAddress" className="form-label">
-            Address
+      <h2 className="mb-4 fw-bold text-body mt-4">Create Candidate</h2>
+
+      <form className="row g-4 p-4 bg-body text-body rounded">
+        <div className="col-md-8">
+          <label htmlFor="candidateName" className="form-label">
+            Candidate Name
           </label>
           <input
             type="text"
             className="form-control"
-            id="inputAddress"
-            placeholder="1234 Main St"
+            id="candidateName"
+            placeholder="Enter full name"
+            required
           />
         </div>
-        <div className="col-12">
-          <label htmlFor="inputAddress2" className="form-label">
-            Address 2
+
+        <div className="col-md-8">
+          <label htmlFor="candidateParty" className="form-label">
+            Political Party
           </label>
           <input
             type="text"
             className="form-control"
-            id="inputAddress2"
-            placeholder="Apartment, studio, or floor"
+            id="candidateParty"
+            placeholder="Enter party name"
+            required
           />
         </div>
-        <div className="col-md-6">
-          <label htmlFor="inputCity" className="form-label">
-            City
-          </label>
-          <input type="text" className="form-control" id="inputCity" />
-        </div>
-        <div className="col-md-4 bg-body text-body">
-          <label htmlFor="inputState" className="form-label">
-            State
-          </label>
-          <select id="inputState" className="form-select">
-            <option >Choose...</option>
-            <option>...</option>
-          </select>
-        </div>
-        <div className="col-md-2">
-          <label htmlFor="inputZip" className="form-label">
-            Zip
-          </label>
-          <input type="text" className="form-control" id="inputZip" />
-        </div>
-        <div className="col-12">
-          <div className="form-check">
-            <input className="form-check-input" type="checkbox" id="gridCheck" />
-            <label className="form-check-label" htmlFor="gridCheck">
-              Check me out
-            </label>
-          </div>
-        </div>
+
         <div className="col-12">
           <button type="submit" className="btn btn-primary">
-            Sign in
+            Create Candidate
           </button>
         </div>
       </form>
     </main>
   );
 };
-export default CreateElectionPage;
+
+export default CreateCandidatePage;
