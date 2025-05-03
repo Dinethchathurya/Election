@@ -1,49 +1,68 @@
+import { useForm } from "react-hook-form";
+
 const CreateElectionPage = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    console.log("Election Created:", data);
+    // You can post data to backend here
+  };
+
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-body text-body">
-      <h2 className="mb-4 fw-bold text-body  mt-4">Create Election</h2>
-      <form className="col g-3 bg-body text-body" method="POST">
+      <h2 className="mb-4 fw-bold text-body mt-4">Create Election</h2>
+
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="row g-4 p-4 bg-body text-body rounded shadow-sm"
+      >
+        {/* Election Date */}
         <div className="col-md-6">
-          <label htmlFor="inputPassword4" className="form-label mt-2">
+          <label htmlFor="electionDate" className="form-label">
             Election Date
           </label>
-          <input type="date" className="form-control" id="inputPassword4" />
-        </div>
-      
-        <label htmlFor="inputPassword4" className="form-label mt-4">
-          Election Type
-        </label>
-        <div className="dropdown col-md-6 ">
-          <button
-            className="btn btn-outline-secondary dropdown-toggle"
-            type="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Choose Election Type
-          </button>
-          <ul className="dropdown-menu">
-            <li>
-              <a className="dropdown-item" href="#">
-                Presidential
-              </a>
-            </li>
-            <li>
-              <a className="dropdown-item disabled" href="#">
-                Parliamentary
-              </a>
-            </li>
-            <li>
-              <a className="dropdown-item disabled" href="#">
-                Provincial
-              </a>
-            </li>
-          </ul>
+          <input
+            type="date"
+            id="electionDate"
+            className={`form-control ${errors.electionDate ? "is-invalid" : ""}`}
+            {...register("electionDate", {
+              required: "Election date is required",
+            })}
+          />
+          {errors.electionDate && (
+            <div className="invalid-feedback">{errors.electionDate.message}</div>
+          )}
         </div>
 
-        {/* Create Button */}
+        {/* Election Type */}
+        <div className="col-md-6">
+          <label htmlFor="electionType" className="form-label">
+            Election Type
+          </label>
+          <select
+            id="electionType"
+            className={`form-select ${errors.electionType ? "is-invalid" : ""}`}
+            {...register("electionType", {
+              required: "Please select an election type",
+            })}
+          >
+            <option value="">Choose...</option>
+            <option value="presidential">Presidential</option>
+            <option value="parliamentary" disabled>Parliamentary (Coming Soon)</option>
+            <option value="provincial" disabled>Provincial (Coming Soon)</option>
+          </select>
+          {errors.electionType && (
+            <div className="invalid-feedback">{errors.electionType.message}</div>
+          )}
+        </div>
+
+        {/* Submit Button */}
         <div className="col-12">
-          <button type="submit" className="btn btn-primary mt-4">
+          <button type="submit" className="btn btn-primary mt-2">
             Create Election
           </button>
         </div>
