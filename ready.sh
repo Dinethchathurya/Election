@@ -13,3 +13,6 @@ npm run vitest
 # to run frontend tests in UI mode
 npm run vitest:ui
 
+# to generate the documentation
+$(dfx cache show)/mo-doc
+
