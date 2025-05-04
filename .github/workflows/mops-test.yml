@@ -11,14 +11,17 @@ on:
 jobs:
   test-backend:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: ${{ matrix.node-version }}
 
       - uses: ZenVoich/setup-mops@v1
         with:
@@ -27,17 +30,14 @@ jobs:
       - name: Install dfx
         uses: dfinity/setup-dfx@main
 
-      - name: Confirm successful installation
-        run: dfx --version
+      - name: Confirm installations
+        run: |
+          node --version
+          dfx --version
+          mops --version
 
       - name: install mops packages
         run: mops install
 
-      - name: Print DFX info
-        run: |
-          dfx --version
-          mops --version
-          node --version
-          
       - name: run tests
         run: mops test --verbose
