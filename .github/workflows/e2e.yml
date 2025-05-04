@@ -23,7 +23,15 @@ jobs:
           node-version: 22
 
       - run: npm install
-      - run: echo y | sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+      - name: Install dfx
+        uses: dfinity/setup-dfx@main
+        
+      - name: Confirm successful installation
+        run: dfx --version
+    
+      - name: install mops packages
+        run: mops install
+        
       - run: npm run ci
         env:
           CI: true
