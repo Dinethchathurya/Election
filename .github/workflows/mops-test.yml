@@ -46,4 +46,10 @@ jobs:
         run: mops install
 
       - name: Run tests
-        run: mops test --verbose
+        run: |
+          set -o pipefail
+          mops test --verbose | tee test-output.log
+
+      - name: Show test output on failure
+        if: failure()
+        run: cat test-output.log
