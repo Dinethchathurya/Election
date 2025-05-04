@@ -17,11 +17,15 @@ jobs:
       - uses: ZenVoich/setup-mops@v1
         with:
           mops-version: 1
-
+      
+      - name: Install DFINITY SDK (dfx non-interactive)
+        run: |
+          export DFXVM_NO_INTERACTION=1
+          curl -fsSL https://sdk.dfinity.org/install.sh | bash
+          echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
+          
       - name: install mops packages
         run: mops install
-      
-      - run: echo y | sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
       - name: run tests
         run: mops test
