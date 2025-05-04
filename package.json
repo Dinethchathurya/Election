@@ -11,7 +11,12 @@
     "start": "npm start --workspaces --if-present",
     "test": "npm test --workspaces --if-present",
     "lint": "eslint src/Election_frontend --ext .js,.jsx",
-    "lint:fix": "eslint src/Election_frontend --ext .js,.jsx --fix"
+    "lint:fix": "eslint src/Election_frontend --ext .js,.jsx --fix",
+    "vitest": "vitest",
+    "vitest:ui": "vitest --ui",
+    "ci": "vitest run",
+    "preci": "dfx stop; dfx start --background --clean; dfx deploy; dfx generate",
+    "format": "prettier --write \"src/**/*.{js,jsx,tsx,json,css,md}\""
   },
   "type": "module",
   "workspaces": [
@@ -19,13 +24,17 @@
   ],
   "devDependencies": {
     "@eslint/js": "^9.26.0",
+    "@vitest/ui": "^3.1.2",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.26.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.0.0",
+    "isomorphic-fetch": "^3.0.0",
     "postcss": "^8.5.3",
+    "prettier": "^3.5.3",
     "typescript": "^5.8.2",
-    "vite-plugin-svgr": "^4.3.0"
+    "vite-plugin-svgr": "^4.3.0",
+    "vitest": "^3.1.2"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.17",

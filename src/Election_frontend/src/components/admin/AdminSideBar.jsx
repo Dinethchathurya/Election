@@ -7,7 +7,6 @@ const AdminSideBar = () => {
       className="p-3 d-flex flex-column bg-body text-body"
       style={{ height: "100vh" }}
     >
-
       <hr />
 
       <ul className="nav nav-pills flex-column mb-auto">
@@ -18,7 +17,12 @@ const AdminSideBar = () => {
               `nav-link ${isActive ? "active" : "text-body"}`
             }
           >
-            <svg className="bi pe-none me-2" width="16" height="16" aria-hidden="true">
+            <svg
+              className="bi pe-none me-2"
+              width="16"
+              height="16"
+              aria-hidden="true"
+            >
               <use xlinkHref="#home" />
             </svg>
             Home
@@ -32,7 +36,12 @@ const AdminSideBar = () => {
               `nav-link ${isActive ? "active" : "text-body"}`
             }
           >
-            <svg className="bi pe-none me-2" width="16" height="16" aria-hidden="true">
+            <svg
+              className="bi pe-none me-2"
+              width="16"
+              height="16"
+              aria-hidden="true"
+            >
               <use xlinkHref="#speedometer2" />
             </svg>
             Create Election
@@ -46,7 +55,12 @@ const AdminSideBar = () => {
               `nav-link ${isActive ? "active" : "text-body"}`
             }
           >
-            <svg className="bi pe-none me-2" width="16" height="16" aria-hidden="true">
+            <svg
+              className="bi pe-none me-2"
+              width="16"
+              height="16"
+              aria-hidden="true"
+            >
               <use xlinkHref="#table" />
             </svg>
             Create Admin
@@ -60,7 +74,12 @@ const AdminSideBar = () => {
               `nav-link ${isActive ? "active" : "text-body"}`
             }
           >
-            <svg className="bi pe-none me-2" width="16" height="16" aria-hidden="true">
+            <svg
+              className="bi pe-none me-2"
+              width="16"
+              height="16"
+              aria-hidden="true"
+            >
               <use xlinkHref="#grid" />
             </svg>
             Create Officer
@@ -74,7 +93,12 @@ const AdminSideBar = () => {
               `nav-link ${isActive ? "active" : "text-body"}`
             }
           >
-            <svg className="bi pe-none me-2" width="16" height="16" aria-hidden="true">
+            <svg
+              className="bi pe-none me-2"
+              width="16"
+              height="16"
+              aria-hidden="true"
+            >
               <use xlinkHref="#people-circle" />
             </svg>
             Create Candidate

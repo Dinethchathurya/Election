@@ -1,0 +1,30 @@
+name: End to End
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - feature/admin-dashbord
+  pull_request:
+    branches:
+      - main
+      - master
+      - feature/admin-dashbord
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 22
+
+      - run: npm install
+      - run: echo y | sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+      - run: npm run ci
+        env:
+          CI: true
+          REPLICA_PORT: 8000

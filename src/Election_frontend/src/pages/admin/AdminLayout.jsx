@@ -17,13 +17,13 @@ const AdminHomePage = ({ setTheme }) => {
             <AdminSideBar />
           </div>
           <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/create-election" element={<CreateElectionPage />} />
-              <Route path="/create-admin" element={<CreateAdmin />} />
-              <Route path="/create-candidate" element={<CreateCandidatePage />} />
-              <Route path="/create-officer" element={<CreateOfficer />} />
-              {/* Add more routes here if needed */}
-            </Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/create-election" element={<CreateElectionPage />} />
+            <Route path="/create-admin" element={<CreateAdmin />} />
+            <Route path="/create-candidate" element={<CreateCandidatePage />} />
+            <Route path="/create-officer" element={<CreateOfficer />} />
+            {/* Add more routes here if needed */}
+          </Routes>
         </div>
       </div>
     </>

@@ -38,7 +38,9 @@ const CreateCandidatePage = () => {
             })}
           />
           {errors.candidateName && (
-            <div className="invalid-feedback">{errors.candidateName.message}</div>
+            <div className="invalid-feedback">
+              {errors.candidateName.message}
+            </div>
           )}
         </div>
 
@@ -60,7 +62,9 @@ const CreateCandidatePage = () => {
             })}
           />
           {errors.candidateParty && (
-            <div className="invalid-feedback">{errors.candidateParty.message}</div>
+            <div className="invalid-feedback">
+              {errors.candidateParty.message}
+            </div>
           )}
         </div>
 

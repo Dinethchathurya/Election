@@ -34,7 +34,9 @@ const CreateElectionPage = () => {
             })}
           />
           {errors.electionDate && (
-            <div className="invalid-feedback">{errors.electionDate.message}</div>
+            <div className="invalid-feedback">
+              {errors.electionDate.message}
+            </div>
           )}
         </div>
 
@@ -52,11 +54,17 @@ const CreateElectionPage = () => {
           >
             <option value="">Choose...</option>
             <option value="presidential">Presidential</option>
-            <option value="parliamentary" disabled>Parliamentary (Coming Soon)</option>
-            <option value="provincial" disabled>Provincial (Coming Soon)</option>
+            <option value="parliamentary" disabled>
+              Parliamentary (Coming Soon)
+            </option>
+            <option value="provincial" disabled>
+              Provincial (Coming Soon)
+            </option>
           </select>
           {errors.electionType && (
-            <div className="invalid-feedback">{errors.electionType.message}</div>
+            <div className="invalid-feedback">
+              {errors.electionType.message}
+            </div>
           )}
         </div>
 
