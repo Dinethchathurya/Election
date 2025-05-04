@@ -16,7 +16,8 @@
     "vitest:ui": "vitest --ui",
     "ci": "vitest run",
     "preci": "dfx stop; dfx start --background --clean; dfx deploy; dfx generate",
-    "format": "prettier --write \"src/**/*.{js,jsx,tsx,json,css,md}\""
+    "format": "prettier --write \"src/**/*.{js,jsx,tsx,json,css,md}\"",
+    "mo-test":"mops test"
   },
   "type": "module",
   "workspaces": [

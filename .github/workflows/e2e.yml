@@ -29,9 +29,6 @@ jobs:
       - name: Confirm successful installation
         run: dfx --version
     
-      - name: install mops packages
-        run: mops install
-        
       - run: npm run ci
         env:
           CI: true
