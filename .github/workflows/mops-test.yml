@@ -18,12 +18,12 @@ jobs:
         with:
           mops-version: 1
       
-      - name: Install DFINITY SDK (dfx non-interactive)
-        run: |
-          export DFXVM_NO_INTERACTION=1
-          curl -fsSL https://sdk.dfinity.org/install.sh | bash
-          echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
-          
+      - name: Install dfx
+        uses: dfinity/setup-dfx@main
+        
+      - name: Confirm successful installation
+        run: dfx --version
+    
       - name: install mops packages
         run: mops install
 
