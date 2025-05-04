@@ -37,7 +37,9 @@ jobs:
           mops --version
 
       - name: install mops packages
-        run: mops install
+        run: |
+          npm install -g ic-mops
+          mops install
 
       - name: run tests
-        run: mops test --verbose
+        run: mops test --verbose --debug
