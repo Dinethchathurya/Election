@@ -14,16 +14,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
       - uses: ZenVoich/setup-mops@v1
         with:
           mops-version: 1
-      
+
       - name: Install dfx
         uses: dfinity/setup-dfx@main
-        
+
       - name: Confirm successful installation
         run: dfx --version
-    
+
       - name: install mops packages
         run: mops install
 
@@ -31,6 +37,7 @@ jobs:
         run: |
           dfx --version
           mops --version
+          node --version
           
       - name: run tests
         run: mops test --verbose
