@@ -41,9 +41,9 @@ jobs:
         run: |
           curl https://wasmtime.dev/install.sh -sSf | bash
           echo "$HOME/.wasmtime/bin" >> $GITHUB_PATH
-          
+
       - name: Install mops packages
         run: mops install
 
       - name: Run tests
-        run: mops test --verbose --debug
+        run: mops test --verbose
