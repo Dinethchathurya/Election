@@ -23,12 +23,13 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - uses: ZenVoich/setup-mops@v1
-        with:
-          mops-version: 1
-
       - name: Install dfx
         uses: dfinity/setup-dfx@main
+
+      - name: Install mops
+        uses: ZenVoich/setup-mops@v1
+        with:
+          mops-version: 1
 
       - name: Confirm installations
         run: |
@@ -36,10 +37,8 @@ jobs:
           dfx --version
           mops --version
 
-      - name: install mops packages
-        run: |
-          npm install -g ic-mops
-          mops install
+      - name: Install mops packages
+        run: mops install
 
-      - name: run tests
+      - name: Run tests
         run: mops test --verbose --debug
