@@ -9,7 +9,7 @@ on:
   pull_request:
 
 jobs:
-  test:
+  test-backend:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,6 +20,8 @@ jobs:
 
       - name: install mops packages
         run: mops install
+      
+      - run: echo y | sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 
       - name: run tests
         run: mops test
