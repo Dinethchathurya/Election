@@ -29,7 +29,7 @@ jobs:
       - name: Confirm successful installation
         run: dfx --version
     
-      - run: npm run ci
+      - run: npm run vitest
         env:
           CI: true
           REPLICA_PORT: 8000
