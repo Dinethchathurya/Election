@@ -10,10 +10,13 @@
 
 
 // create new module and put this function in it and lets see if it works
-
-import { test; suite } "mo:test/async";
+import T "mo:test/async";
 import Debug "mo:base/Debug";// ✅ adjust path if needed
 import Nat "mo:base/Nat";
+
+
+let test = T.test;
+let suite = T.suite;
 
 await suite("Basic Math Tests", func() : async () {
 
