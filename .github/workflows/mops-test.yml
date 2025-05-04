@@ -27,5 +27,10 @@ jobs:
       - name: install mops packages
         run: mops install
 
+      - name: Print DFX info
+        run: |
+          dfx --version
+          mops --version
+          
       - name: run tests
         run: mops test --verbose
