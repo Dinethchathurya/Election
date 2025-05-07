@@ -16,3 +16,5 @@ npm run vitest:ui
 # to generate the documentation
 $(dfx cache show)/mo-doc
 
+# to generate the frontend documentation
+npm run storybook

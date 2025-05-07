@@ -75,3 +75,5 @@ pnpm-lock.yaml
 *.swo
 
 .mops
+
+*storybook.log
