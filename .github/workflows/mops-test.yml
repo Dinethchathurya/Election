@@ -36,7 +36,10 @@ jobs:
           node --version
           dfx --version
           mops --version
-      
+          
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
       - name: Install wasmtime
         run: |
           curl https://wasmtime.dev/install.sh -sSf | bash
