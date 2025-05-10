@@ -1,4 +1,9 @@
 import { useForm } from "react-hook-form";
+import { Election_backend } from 'declarations/Election_backend';
+import {Actor, HttpAgent} from "@dfinity/agent";
+import { idlFactory, Election_Actor_Class } from 'declarations/Election_Actor_Class';
+import { Principal } from "@dfinity/principal";
+
 
 const CreateElectionPage = () => {
   const {
@@ -7,14 +12,39 @@ const CreateElectionPage = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Election Created:", data);
-    // You can post data to backend here
+  const onSubmit = async (data) => {
+    console.log("Election Created:", data.electionDate);
+    console.log("Election Type:", data.electionType);
+    try {
+      let electionType = data.electionType;
+      let year = data.electionDate.split("-")[0]; // Extracting the year from the date
+      console.log("Election Created:", year);
+      console.log("Election Type:", electionType);
+      let newid = await Election_backend.createElection(electionType, year);
+      console.log(newid.toText());
+
+    } catch (e) {
+      console.log(e);
+    }
+
   };
+
+  async function createElectionFunction() {
+    try {
+      let electionType = "parliment";
+      let year = "2000";
+      let newid = await Election_backend.createElection(electionType, year);
+      console.log(newid.toText());
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-body text-body">
       <h2 className="mb-4 fw-bold text-body mt-4">Create Election</h2>
+      <button onClick={createElectionFunction}>Create</button>
+
 
       <form
         onSubmit={handleSubmit(onSubmit)}
