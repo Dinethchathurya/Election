@@ -4,8 +4,13 @@ import {Actor, HttpAgent} from "@dfinity/agent";
 import { idlFactory, Election_Actor_Class } from 'declarations/Election_Actor_Class';
 import { Principal } from "@dfinity/principal";
 
+import { useDispatch } from 'react-redux';
+import { addElection } from '../../store/electionSlice'; // adjust path if needed
+
 
 const CreateElectionPage = () => {
+  const dispatch = useDispatch();
+  
   const {
     register,
     handleSubmit,
@@ -22,6 +27,16 @@ const CreateElectionPage = () => {
       console.log("Election Type:", electionType);
       let newid = await Election_backend.createElection(electionType, year);
       console.log(newid.toText());
+
+      // ✅ Dispatch to Redux
+      dispatch(addElection({
+        id: newid.toText(),
+        type: electionType,
+        date: year,
+        results: null,
+        candidates: [],
+        officers: [],
+      }));
 
     } catch (e) {
       console.log(e);

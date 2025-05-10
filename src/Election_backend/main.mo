@@ -8,9 +8,6 @@ import ElectionModule "election/election"
 
 actor Election {
 
-  private var mapOfElections = HashMap.HashMap<Principal, ElectionActorClass.Election_Actor_Class>(1, Principal.equal, Principal.hash);
-  var principals : List.List<Principal> = List.nil<Principal>();
-
   //election
   let electionClass = ElectionModule.ElectionClass();
 
@@ -32,7 +29,6 @@ actor Election {
     let newOfficer :Text = await electionClass.createElectionOfficerForThisElection(electionOfficerId,electionOfficerName,pollingStation, pollingDivision, district );
     return newOfficer;
   };
-
 
 
   //get all elections
