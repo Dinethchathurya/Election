@@ -46,9 +46,9 @@ actor Election {
     role : Text;
   };
 
-  public func createElectionAdmin(id : Principal, name : Text) : async Text {
+  public func createElectionAdmin(internetId : Principal, name : Text) : async Text {
 
-    let admin : Text = adminClass.createElectionAdmins(id, name);
+    let admin : Text = adminClass.createElectionAdmins(internetId, name);
     if (admin == "Success") {
       return "success";
     } else {

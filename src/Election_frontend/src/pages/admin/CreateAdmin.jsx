@@ -1,4 +1,6 @@
 import { useForm } from "react-hook-form";
+import { Election_backend } from 'declarations/Election_backend';
+import { Principal } from "@dfinity/principal";
 
 const CreateAdminPage = () => {
   const {
@@ -7,10 +9,24 @@ const CreateAdminPage = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
+const onSubmit = async (data) => {
+  try {
     console.log("Form Submitted:", data);
-    // TODO: send data to your backend
-  };
+
+    const principal = Principal.fromText(data.internetId); // ✅ Convert string to Principal
+
+    const response = await Election_backend.createElectionAdmin(
+      principal,
+      data.firstName + " " + data.lastName // optional: add space
+    );
+
+    console.log("Admin Created:", response);
+    alert("Admin Created Successfully!");
+  } catch (err) {
+    console.error("Failed to create admin:", err);
+    alert("Error: " + err.message);
+  }
+};
 
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-body text-body">
