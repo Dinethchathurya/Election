@@ -29,23 +29,10 @@ const CreateElectionPage = () => {
 
   };
 
-  async function createElectionFunction() {
-    try {
-      let electionType = "parliment";
-      let year = "2000";
-      let newid = await Election_backend.createElection(electionType, year);
-      console.log(newid.toText());
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-body text-body">
       <h2 className="mb-4 fw-bold text-body mt-4">Create Election</h2>
-      <button onClick={createElectionFunction}>Create</button>
-
-
+     
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="row g-4 p-4 bg-body text-body rounded shadow-sm"
