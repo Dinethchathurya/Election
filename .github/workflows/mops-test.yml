@@ -5,8 +5,12 @@ on:
     branches:
       - main
       - master
-      - feature/admin-dashbord
+
   pull_request:
+    branches:
+      - main
+      - master
+      - feature/admin-dashbord
 
 jobs:
   test-backend:
