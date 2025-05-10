@@ -1,4 +1,6 @@
 import { useForm } from "react-hook-form";
+import { Election_backend } from 'declarations/Election_backend';
+import { Principal } from "@dfinity/principal";
 
 const CreateOfficer = () => {
   const districts = [
@@ -32,10 +34,37 @@ const CreateOfficer = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Officer Created:", data);
-    // You can send data to API here
-  };
+const onSubmit = async (data) => {
+  try {
+    console.log("Form Data:", data);
+
+    const electionId = Principal.fromText(data.electionId);
+    const officerId = Principal.fromText(data.officerId);
+    const officerName = data.officerName;
+
+    console.log("Election ID (Principal):", electionId.toText());
+    console.log("Officer ID (Principal):", officerId.toText());
+    console.log("Officer Name:", officerName);
+    console.log("Polling Station:", data.pollingStation);
+    console.log("Polling Division:", data.pollingDivision);
+    console.log("District:", data.district);
+
+    const response = await Election_backend.createElectionOfficer(
+      electionId,
+      officerId,
+      officerName,
+      data.pollingStation,
+      data.pollingDivision,
+      data.district
+    );
+
+    console.log("Officer Created:", response);
+    alert("Election Officer Created Successfully!");
+  } catch (err) {
+    console.error("Failed to create officer:", err);
+    alert("Error: " + err.message);
+  }
+};
 
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-body text-body">
