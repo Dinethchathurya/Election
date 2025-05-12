@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-
 import AdminHomePage from "./pages/admin/AdminLayout";
-import HomePage from "./pages/admin/HomePage";
-import CreateElectionPage from "./pages/admin/CreateElectionPage";
+import BallotPaper from "./pages/officer/BallotPaper";
 
 function App() {
   useEffect(() => {
@@ -26,6 +24,10 @@ function App() {
       <Route path="/*" element={<AdminHomePage setTheme={setTheme} />}>
         {/* Nested routes inside Admin Layout */}
       </Route>
+      <Route path="/ballotPaper" element={<BallotPaper setTheme={setTheme} />}>
+        {/* Nested routes inside Admin Layout */}
+      </Route>
+      
     </Routes>
   );
 }
