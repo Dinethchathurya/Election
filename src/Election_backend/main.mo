@@ -73,7 +73,12 @@ actor Election {
 
 
   //candidate
-  public func createCandidate() {};
+  public func createCandidate(electionId : Principal, candidateName : Text, candidateParty : Text) : async Text{
+    let electionClass : ElectionActorClass.Election_Actor_Class = await getElection_Actor_Class(electionId);
+    let status :Text = await electionClass.createElectionCandidate(candidateName,candidateParty);
+    return status;
+
+  };
 
   public func checkDataIntegrity() {};
 

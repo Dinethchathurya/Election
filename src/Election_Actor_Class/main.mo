@@ -47,6 +47,7 @@ actor class Election_Actor_Class(electionType: Text, year : Text) = this{
         let status : Text =await candidateModuleInstance.createElectionCandidate(candidateName,candidateParty);
         return status;
     };
+    
     public query func getElectionCandidates(name : Text) :async  Type.ElectionCandidate {
         let candidate : Type.ElectionCandidate = candidateModuleInstance.getElectionCandidates(name);
         return candidate;
