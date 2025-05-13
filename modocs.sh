@@ -1,0 +1,1 @@
+$(dfx cache show)/mo-doc
