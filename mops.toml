@@ -1,6 +1,0 @@
-[dependencies]
-base = "0.13.4"
-map = "9.0.1"
-
-[dev-dependencies]
-test = "2.1.0"

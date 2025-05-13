@@ -1,34 +1,30 @@
-import { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
-import AdminHomePage from "./pages/admin/AdminLayout";
-import BallotPaper from "./pages/officer/BallotPaper";
+import { useState } from 'react';
+import { Election_backend } from 'declarations/Election_backend';
 
 function App() {
-  useEffect(() => {
-    const storedTheme = localStorage.getItem("theme") || "auto";
-    setTheme(storedTheme);
-  }, []);
+  const [greeting, setGreeting] = useState('');
 
-  const setTheme = (theme) => {
-    if (theme === "auto") {
-      document.documentElement.removeAttribute("data-bs-theme");
-    } else {
-      document.documentElement.setAttribute("data-bs-theme", theme);
-    }
-    localStorage.setItem("theme", theme);
-  };
+  function handleSubmit(event) {
+    event.preventDefault();
+    const name = event.target.elements.name.value;
+    Election_backend.greet(name).then((greeting) => {
+      setGreeting(greeting);
+    });
+    return false;
+  }
 
   return (
-    <Routes>
-      {/* Admin dashboard layout */}
-      <Route path="/*" element={<AdminHomePage setTheme={setTheme} />}>
-        {/* Nested routes inside Admin Layout */}
-      </Route>
-      <Route path="/ballotPaper" element={<BallotPaper setTheme={setTheme} />}>
-        {/* Nested routes inside Admin Layout */}
-      </Route>
-      
-    </Routes>
+    <main>
+      <img src="/logo2.svg" alt="DFINITY logo" />
+      <br />
+      <br />
+      <form action="#" onSubmit={handleSubmit}>
+        <label htmlFor="name">Enter your name: &nbsp;</label>
+        <input id="name" alt="Name" type="text" />
+        <button type="submit">Click Me!</button>
+      </form>
+      <section id="greeting">{greeting}</section>
+    </main>
   );
 }
 
