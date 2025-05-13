@@ -14,10 +14,6 @@
       "type": "assets",
       "workspace": "Election_frontend"
     },
-    "Election_Actor_Class": {
-      "main": "src/Election_Actor_Class/main.mo",
-      "type": "motoko"
-    },
     "internet_identity": {
       "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
       "frontend": {},
@@ -33,7 +29,7 @@
   "defaults": {
     "build": {
       "args": "",
-      "packtool": "mops sources"
+      "packtool": ""
     }
   },
   "output_env_file": ".env",

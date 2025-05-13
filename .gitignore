@@ -10,70 +10,16 @@
 # dfx temporary files
 .dfx/
 
-# Motoko generated files
+# generated files
 **/declarations/
 
-# Rust build artifacts
+# rust
 target/
 
-# Node.js dependencies and build outputs
+# frontend code
 node_modules/
 dist/
-build/
-
-# Svelte specific files (if applicable)
 .svelte-kit/
 
-# TypeScript build files
-*.tsbuildinfo
-
-# Log files
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Environment variables
+# environment variables
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Temporary files
-tmp/
-temp/
-
-# Coverage files
-coverage/
-*.lcov
-
-# System generated files
-Thumbs.db
-
-# EditorConfig backup
-*.bak
-
-# Lock files
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
-# Generated assets
-*.map
-
-# Cache
-.cache/
-.next/
-
-# Flutter specific files (if applicable)
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-
-# Optional OS-specific files
-*.swp
-*.swo
-
-.mops
-
-*storybook.log
