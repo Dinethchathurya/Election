@@ -84,4 +84,11 @@ actor Election {
 
   public func calculateResults() {};
 
+
+
+  //Authentication
+   public query (message) func whoami() : async Principal {
+    message.caller;
+  };
+
 };

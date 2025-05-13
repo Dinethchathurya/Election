@@ -2,7 +2,7 @@ import Text "mo:base/Text";
 import HashMap "mo:base/HashMap";
 import Principal "mo:base/Principal";
 import List "mo:base/List";
-import Type "./types/Type";
+import Type "../types/Type";
 import Nat32 "mo:base/Nat32";
 import Iter "mo:base/Iter";
 

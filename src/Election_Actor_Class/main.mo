@@ -4,7 +4,7 @@ import Bool "mo:base/Bool";
 import ElectionOfficerModule "users/officer";
 import CandidateModule "users/candidate";
 import Type "./types/Type";
-import VoteModule "vote";
+import VoteModule "./vote/vote";
 
 actor class Election_Actor_Class(electionType: Text, year : Text) = this{
 

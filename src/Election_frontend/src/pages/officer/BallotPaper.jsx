@@ -57,6 +57,7 @@ const BallotPaper = () => {
             <p className="fs-4 m-0 text-primary">Sri Lanka Election Portal</p>
           </a>
           <p className="fs-4 m-0">National Election Commission</p>
+         
         </div>
       </header>
 
