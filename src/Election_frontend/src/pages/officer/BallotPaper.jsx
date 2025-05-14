@@ -6,13 +6,13 @@ const BallotPaper = () => {
 
   const candidates = [
     { name: "මොනාෂා", symbol: "●", lang: ["Monasha tironi wijerathna", "மோனாஷா"] },
-    { name: "ජනක", symbol: "▲", lang: ["Janaka", "ஜனகா"] },
-    { name: "සමන්", symbol: "■", lang: ["Saman", "சமன்"] },
-    { name: "නිමාල්", symbol: "▣", lang: ["Nimal", "நிமல்"] },
-    { name: "කුමාර්", symbol: "⬬", lang: ["Kumar", "குமார்"] },
-    { name: "ජනක", symbol: "▲", lang: ["Janaka", "ஜனகா"] },
-    { name: "සමන්", symbol: "■", lang: ["Saman", "சமன்"] },
-    { name: "නිමාල්", symbol: "▣", lang: ["Nimal", "நிமல்"] },
+    { name: "ජනක", symbol: "▲", lang: ["Janaka kjbhkjbkjb", "ஜனகா"] },
+    { name: "සමන්", symbol: "■", lang: ["Saman mjbkbkb", "சமன்"] },
+    { name: "නිමාල්", symbol: "▣", lang: ["Nimal bjbk,jnb jnbjn,kj", "நிமல்"] },
+    { name: "කුමාර්", symbol: "⬬", lang: ["Kumar nj,n,jn n,kjn,jn", "குமார்"] },
+    { name: "ජනක", symbol: "▲", lang: ["Janaka njn,jn ,jn,jn", "ஜனகா"] },
+    { name: "සමන්", symbol: "■", lang: ["Saman n,n,n nnjknlk", "சமன்"] },
+    { name: "නිමාල්", symbol: "▣", lang: ["Nimal nlkjnljknlknlknln", "நிமல்"] },
   ];
 
   const handleSelection = (index) => {

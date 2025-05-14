@@ -11,40 +11,40 @@ module VoteModule {
     public class VoteClass() {
 
         private var votesByOfficer = HashMap.HashMap<Principal, List.List<Type.Vote>>(1, Principal.equal, Principal.hash);
-        // Function to add a new vote for an election officer
-        // shared functions cannot use here because this is not inside actor class. i need to call this function inside actor class with msg as parameeter 
-        // public shared (msg) func addVote(firstChoice : Text, secondChoice : ?Text, thirdChoice : ?Text) : async Text {
-        //     let officerId = msg.caller; // Get the Principal of the election officer
+        //Function to add a new vote for an election officer
+        //shared functions cannot use here because this is not inside actor class. i need to call this function inside actor class with msg as parameeter 
+        public func addVote(officerId  : Principal, firstChoice : Text, secondChoice : ?Text, thirdChoice : ?Text) : async Text {
+            //let officerId = msg.caller; // Get the Principal of the election officer
 
-        //     // Get the current list of votes for the officer (or an empty list if none exists)
-        //     let currentVotes = switch (votesByOfficer.get(officerId)) {
-        //         case (null) { List.nil<Type.Vote>() };
-        //         case (?votes) { votes };
-        //     };
+            // Get the current list of votes for the officer (or an empty list if none exists)
+            let currentVotes = switch (votesByOfficer.get(officerId)) {
+                case (null) { List.nil<Type.Vote>() };
+                case (?votes) { votes };
+            };
 
-        //     // Calculate the previous vote hash (hash of the last vote in the list)
-        //     let previousVoteHash = switch (List.last(currentVotes)) {
-        //         case (null) { null };
-        //         case (?lastVote) { ?calculateHash(lastVote) };
-        //     };
+            // Calculate the previous vote hash (hash of the last vote in the list)
+            let previousVoteHash = switch (List.last(currentVotes)) {
+                case (null) { null };
+                case (?lastVote) { ?calculateHash(lastVote) };
+            };
 
-        //     // Create the new vote
-        //     let newVote : Type.Vote = {
-        //         firstChoice = firstChoice;
-        //         secondChoice = secondChoice;
-        //         thirdChoice = thirdChoice;
-        //         previousVoteHash = previousVoteHash;
-        //     };
+            // Create the new vote
+            let newVote : Type.Vote = {
+                firstChoice = firstChoice;
+                secondChoice = secondChoice;
+                thirdChoice = thirdChoice;
+                previousVoteHash = previousVoteHash;
+            };
 
-        //     // Add the new vote to the list
-        //     let updatedVotes = List.push(newVote, currentVotes);
+            // Add the new vote to the list
+            let updatedVotes = List.push(newVote, currentVotes);
 
-        //     // Update the HashMap with the new list of votes
-        //     votesByOfficer.put(officerId, updatedVotes);
+            // Update the HashMap with the new list of votes
+            votesByOfficer.put(officerId, updatedVotes);
 
-        //     // Return the hash of the new vote for verification
-        //     return calculateHash(newVote);
-        // };
+            // Return the hash of the new vote for verification
+            return calculateHash(newVote);
+        };
 
         // Function to calculate the hash of a vote using Text.hash
         private func calculateHash(vote : Type.Vote) : Text {
@@ -92,10 +92,7 @@ module VoteModule {
             return isValid;
         };
 
-
-
         //results calculation process
-
 
         // HashMap to store the results for each election officer
 

@@ -22,6 +22,7 @@ actor class Election_Actor_Class(electionType: Text, year : Text) = this{
         return Principal.fromActor(this);
     };
 
+
     // election Officer related
     let electionOfficerModuleInstance = ElectionOfficerModule.ElectionOfficerClass();
     
@@ -40,6 +41,7 @@ actor class Election_Actor_Class(electionType: Text, year : Text) = this{
         return isOfficer;
     };
 
+
     // elation candidate related
     let candidateModuleInstance = CandidateModule.CandidateClass();
 
@@ -53,7 +55,25 @@ actor class Election_Actor_Class(electionType: Text, year : Text) = this{
         return candidate;
     };
 
+
     //voter related
-    //let voteModuleInstance = VoteModule.VoteClass();
+    let voteModuleInstance = VoteModule.VoteClass();
+
+    public shared(msg) func addVoteFunction(firstChoice: Text, secondChoice: ?Text, thirdChoice: ?Text) : async Text {
+        let status : Text = await voteModuleInstance.addVote(msg.caller :Principal, firstChoice,  secondChoice, thirdChoice);
+        return status;
+    };
+    
+
+    public shared(msg) func getVoteFunction() : async [Type.Vote] {
+        let votes : [Type.Vote] = await voteModuleInstance.getVotes(msg.caller : Principal);
+        return votes;
+    };
+
+
+    public shared(msg) func verifyVoteChainFunction() : async Bool {
+        let isValid : Bool = await voteModuleInstance.verifyChain(msg.caller);
+        return isValid;
+    };
     
 };
