@@ -107,7 +107,12 @@ actor Election {
 
   };
 
-  
+  public shared(msg) func verifyVoteChain(electionId: Principal) : async Bool {
+    let electionClass : ElectionActorClass.Election_Actor_Class = await getElection_Actor_Class(electionId);
+    let isValid : Bool = await electionClass.verifyVoteChainFunction(msg.caller);
+    return isValid;
+
+  };
 
 
 

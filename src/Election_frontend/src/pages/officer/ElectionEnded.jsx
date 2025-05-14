@@ -1,8 +1,27 @@
+import { Election_backend } from 'declarations/Election_backend';
+import { Principal } from "@dfinity/principal";
 
 const ElectionEnded = () => {
-  const handleVerify = () => {
-    alert("🕵️ Verifying results... (connect to backend)");
-    // TODO: call backend to verify
+
+
+  const handleVerify = async () => {
+  try {
+
+ 
+    const electionId = Principal.fromText("aovwi-4maaa-aaaaa-qaagq-cai");
+    console.log("✅ Election ID is a valid Principal:", electionId.toText());
+
+    const result = await Election_backend.verifyVoteChain(electionId);
+
+    console.log("Candidate creation result:", result);
+    alert("Candidate creation result");
+    reset();
+  } catch (e) {
+    console.error("❌ Error creating candidate:", e);
+    alert("Failed to create candidate: " + e.message);
+  }
+
+
   };
 
   const handleCalculate = () => {

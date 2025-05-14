@@ -40,9 +40,8 @@ const BallotPaper = () => {
     const third = ordered[2] ? [ordered[2]] : [];
 
     try {
-      const canisterid = Principal.fromText("ajuq4-ruaaa-aaaaa-qaaga-cai");
+      const canisterid = Principal.fromText("aovwi-4maaa-aaaaa-qaagq-cai");
       
-
       const response = await Election_backend.addVote(canisterid, first, second, third);
       console.log("✅ Vote submitted:", response);
       alert("✅ Vote submitted successfully!");
