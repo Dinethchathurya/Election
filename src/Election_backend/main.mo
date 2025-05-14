@@ -4,7 +4,9 @@ import HashMap "mo:base/HashMap";
 import AdminModule "admin/admin";
 import ElectionActorClass "../Election_Actor_Class/main";
 import List "mo:base/List";
-import ElectionModule "election/election"
+import ElectionModule "election/election";
+import Type "../Election_Actor_Class/types/Type";
+
 
 actor Election {
 
@@ -57,11 +59,9 @@ actor Election {
 
   };
 
-  public shared query func name() : async ElectionAdminType {
-
-    let id : Principal = Principal.fromText("a5uvy-7ojr2-iyefm-n22mq-hxn6l-l6dbq-5n2yy-b67g2-6apqn-u5u5u-uqe");
-
-    let result : ElectionAdminType = adminClass.getElectionAdmins(id);
+  //get election admin
+  public shared query func name(msg : { caller : Principal }) : async ElectionAdminType {
+    let result : ElectionAdminType = adminClass.getElectionAdmins(msg.caller);
     return result;
   };
 
@@ -87,8 +87,28 @@ actor Election {
 
 
   //Authentication
-   public query (message) func whoami() : async Principal {
+  public query (message) func whoami() : async Principal {
     message.caller;
   };
+
+
+   //voter related
+  public shared(msg) func addVote(electionId: Principal, firstChoice : Text, secondChoice : ?Text, thirdChoice : ?Text) : async Text{
+    let electionClass : ElectionActorClass.Election_Actor_Class = await getElection_Actor_Class(electionId);
+    let status :Text = await electionClass.addVoteFunction(msg.caller, firstChoice, secondChoice, thirdChoice);
+    return status;
+
+  };
+
+  public shared(msg) func getVotesFunction(electionId: Principal) : async [Type.Vote]{
+    let electionClass : ElectionActorClass.Election_Actor_Class = await getElection_Actor_Class(electionId);
+    let status :[Type.Vote] = await electionClass.getVoteFunction(msg.caller);
+    return status;
+
+  };
+
+  
+
+
 
 };

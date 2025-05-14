@@ -59,20 +59,20 @@ actor class Election_Actor_Class(electionType: Text, year : Text) = this{
     //voter related
     let voteModuleInstance = VoteModule.VoteClass();
 
-    public shared(msg) func addVoteFunction(firstChoice: Text, secondChoice: ?Text, thirdChoice: ?Text) : async Text {
-        let status : Text = await voteModuleInstance.addVote(msg.caller :Principal, firstChoice,  secondChoice, thirdChoice);
+    public func addVoteFunction(caller: Principal ,firstChoice: Text, secondChoice: ?Text, thirdChoice: ?Text) : async Text {
+        let status : Text = await voteModuleInstance.addVote(caller, firstChoice,  secondChoice, thirdChoice);
         return status;
     };
     
 
-    public shared(msg) func getVoteFunction() : async [Type.Vote] {
-        let votes : [Type.Vote] = await voteModuleInstance.getVotes(msg.caller : Principal);
+    public func getVoteFunction(caller: Principal) : async [Type.Vote] {
+        let votes : [Type.Vote] = await voteModuleInstance.getVotes(caller);
         return votes;
     };
 
 
-    public shared(msg) func verifyVoteChainFunction() : async Bool {
-        let isValid : Bool = await voteModuleInstance.verifyChain(msg.caller);
+    public func verifyVoteChainFunction(caller: Principal) : async Bool {
+        let isValid : Bool = await voteModuleInstance.verifyChain(caller);
         return isValid;
     };
     

@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import AdminHomePage from "./pages/admin/AdminLayout";
 import BallotPaper from "./pages/officer/BallotPaper";
 import AuthPage from "./pages/AuthPage";
+import ElectionEnded from "./pages/officer/ElectionEnded";
 
 function App() {
   useEffect(() => {
@@ -29,7 +30,9 @@ function App() {
         {/* Nested routes inside Admin Layout */}
       </Route>
       <Route path="/auth" element={<AuthPage setTheme={setTheme} />}></Route>
+      <Route path="/end" element={<ElectionEnded setTheme={setTheme} />}></Route>
     </Routes>
+
   );
 }
 
