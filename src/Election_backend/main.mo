@@ -114,6 +114,4 @@ actor Election {
 
   };
 
-
-
 };

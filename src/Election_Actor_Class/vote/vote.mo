@@ -13,22 +13,20 @@ module VoteModule {
         private var votesByOfficer = HashMap.HashMap<Principal, List.List<Type.Vote>>(1, Principal.equal, Principal.hash);
         //Function to add a new vote for an election officer
         //shared functions cannot use here because this is not inside actor class. i need to call this function inside actor class with msg as parameeter 
-        public func addVote(officerId  : Principal, firstChoice : Text, secondChoice : ?Text, thirdChoice : ?Text) : async Text {
-            //let officerId = msg.caller; // Get the Principal of the election officer
 
-            // Get the current list of votes for the officer (or an empty list if none exists)
+
+        public func addVote(officerId : Principal, firstChoice : Text, secondChoice : ?Text, thirdChoice : ?Text) : async Text {
             let currentVotes = switch (votesByOfficer.get(officerId)) {
                 case (null) { List.nil<Type.Vote>() };
                 case (?votes) { votes };
             };
 
-            // Calculate the previous vote hash (hash of the last vote in the list)
-            let previousVoteHash = switch (List.last(currentVotes)) {
+            // Properly destructure the head of the list
+            let previousVoteHash = switch (currentVotes) {
                 case (null) { null };
-                case (?lastVote) { ?calculateHash(lastVote) };
+                case (? (headVote, _)) { ?calculateHash(headVote) }; // ✅ FIXED
             };
 
-            // Create the new vote
             let newVote : Type.Vote = {
                 firstChoice = firstChoice;
                 secondChoice = secondChoice;
@@ -36,13 +34,9 @@ module VoteModule {
                 previousVoteHash = previousVoteHash;
             };
 
-            // Add the new vote to the list
             let updatedVotes = List.push(newVote, currentVotes);
-
-            // Update the HashMap with the new list of votes
             votesByOfficer.put(officerId, updatedVotes);
 
-            // Return the hash of the new vote for verification
             return calculateHash(newVote);
         };
 
@@ -66,37 +60,33 @@ module VoteModule {
             }
         };
 
-        // Function to verify the integrity of the vote chain for an election officer
+
         public func verifyChain(officerId : Principal) : async Bool {
             let votes = switch (votesByOfficer.get(officerId)) {
-                case (null) { return false }; // No votes to verify
-                case (?votes) { votes };
+                case (null) { return false };
+                case (?v) { v };
             };
 
             var currentHash : ?Text = null;
-            var isValid = true;
 
-            // Convert the list of votes to an array for easier traversal
-            let voteArray = List.toArray(votes);
+            // Reverse to go oldest → newest
+            let voteArray = List.toArray(List.reverse(votes));
 
-            // Traverse the array in reverse order (from newest to oldest)
             for (vote in voteArray.vals()) {
-                let calculatedHash = calculateHash(vote);
                 if (vote.previousVoteHash != currentHash) {
-                    isValid := false;
-                    return isValid; // Exit early if the chain is invalid
+                    return false;
                 };
-                currentHash := ?calculatedHash;
+                currentHash := ?calculateHash(vote);
             };
 
-            return isValid;
+            return true;
         };
 
         //results calculation process
 
         // HashMap to store the results for each election officer
 
-        private var resultsByOfficer = HashMap.HashMap<Principal, HashMap.HashMap<Text, List.List<Int>>>(
+        public var resultsByOfficer = HashMap.HashMap<Principal, HashMap.HashMap<Text, List.List<Int>>>(
             1, // Initial capacity
             Principal.equal, // Equality function for Principal
             Principal.hash // Hash function for Principal
@@ -109,22 +99,54 @@ module VoteModule {
 
         // shared functions cannot use here because this is not inside actor class. i need to call this function inside actor class with msg as parameeter 
 
-        // public shared(msg) func calculateAndStoreResults(votes : [Type.Vote]) : async () {
-        //     let officerId = msg.caller; // Get the Principal ID of the election officer
+        // Function to calculate election results by tallying votes
+        public func calculateResults() : async [(Text, Nat)] {
+            var voteCounts = HashMap.HashMap<Text, Nat>(10, Text.equal, Text.hash);
 
-        //     // Create or retrieve the inner HashMap for this officer
-        //     let innerHashMap = switch (resultsByOfficer.get(officerId)) {
-        //         case (null) {
-        //             // If no inner HashMap exists, create a new one
-        //             let newInnerHashMap = HashMap.HashMap<Text, List.List<Int>>(1, Text.equal, Text.hash);
-        //             resultsByOfficer.put(officerId, newInnerHashMap); // Store it in the outer HashMap
-        //             newInnerHashMap; // Return the new inner HashMap
-        //         };
-        //         case (?existingInnerHashMap) {
-        //             existingInnerHashMap; // Return the existing inner HashMap
-        //         };
-        //     };
-        // };
+            // Iterate through each officer's submitted votes
+            for ((officer, voteList) in votesByOfficer.entries()) {
+                let votesArray = List.toArray(voteList);
+
+                // Go through each vote
+                for (vote in votesArray.vals()) {
+                    // First choice gets 3 points
+                    let firstScore = switch (voteCounts.get(vote.firstChoice)) {
+                        case (null) 0;
+                        case (?v) v;
+                    };
+                    voteCounts.put(vote.firstChoice, firstScore + 3);
+
+                    // Second choice gets 2 points (if exists)
+                    switch (vote.secondChoice) {
+                        case (?second) {
+                            let secondScore = switch (voteCounts.get(second)) {
+                                case (null) 0;
+                                case (?v) v;
+                            };
+                            voteCounts.put(second, secondScore + 2);
+                        };
+                        case (null) {};
+                    };
+
+                    // Third choice gets 1 point (if exists)
+                    switch (vote.thirdChoice) {
+                        case (?third) {
+                            let thirdScore = switch (voteCounts.get(third)) {
+                                case (null) 0;
+                                case (?v) v;
+                            };
+                            voteCounts.put(third, thirdScore + 1);
+                        };
+                        case (null) {};
+                    };
+                }
+            };
+
+            // Convert HashMap to array for return
+            let resultList = Iter.toArray(voteCounts.entries());
+            return resultList;
+        }
+
         
     };
 };
