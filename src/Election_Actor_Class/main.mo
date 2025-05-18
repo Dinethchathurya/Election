@@ -75,5 +75,18 @@ actor class Election_Actor_Class(electionType: Text, year : Text) = this{
         let isValid : Bool = await voteModuleInstance.verifyChain(caller);
         return isValid;
     };
+
+
+    public func calculateResultsForOfficerFunction(caller: Principal)  {
+        voteModuleInstance.calculateResultsForOfficer(caller);
+     
+    };
+
+
+    public func getResultsForOfficerFunction(caller: Principal) : async [(Text, [Int])] {
+        var results : [(Text, [Int])] = [];
+        results := await voteModuleInstance.getResultsForOfficer(caller);
+        return results;
+    };
     
 };
