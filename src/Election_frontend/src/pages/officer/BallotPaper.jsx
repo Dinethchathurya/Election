@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../../../public/css/ballotPaper.css";
 import { Election_backend } from 'declarations/Election_backend';
 import { Principal } from "@dfinity/principal";
+import NavBar from "../../components/admin/NavBar";
 
 
 const BallotPaper = () => {
@@ -56,15 +57,8 @@ const BallotPaper = () => {
 
   return (
     <div className="d-flex flex-column min-vh-100 bg-body text-body">
-      <header className="navbar bg-light shadow-sm p-3 d-flex align-items-center">
-        <div className="container d-flex justify-content-between align-items-center">
-          <a href="/" className="d-flex align-items-center text-decoration-none">
-            <img src="/assets/govlogo.png" alt="ballotPaper" height="60" className="me-3" />
-            <p className="fs-4 m-0 text-primary">Sri Lanka Election Portal</p>
-          </a>
-          <p className="fs-4 m-0">National Election Commission</p>
-        </div>
-      </header>
+
+      <NavBar />
 
       <main className="container-sm flex-fill d-flex flex-column justify-content-between py-4">
         <div>
