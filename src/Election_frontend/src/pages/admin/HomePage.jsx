@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchElections } from '../../store/electionSlice'; // ✅ Correct if file is there
+import ElectionCharts from './charts/ ElectionCharts';
 
 
 const HomePage = () => {
@@ -16,7 +17,7 @@ const HomePage = () => {
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div>
-        <h1>Elections</h1>
+        <h1>Election</h1>
         {loading && <p>Loading elections...</p>}
         {error && <p>Error: {error}</p>}
         <ul>
@@ -25,19 +26,19 @@ const HomePage = () => {
           ))}
         </ul>
       </div>
-      <h2>Section title</h2>
-      <div className="table-responsive small">
-        <table className="table table-striped table-sm">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Header</th>
-              <th scope="col">Header</th>
-              <th scope="col">Header</th>
-              <th scope="col">Header</th>
-            </tr>
-          </thead>
-          <tbody>
+      <h2 className="mt-5 mb-3">📋 Sample Election Data Table</h2>
+<div className="table-responsive">
+  <table className="table table-bordered table-hover table-striped align-middle text-center shadow-sm rounded">
+    <thead className="table-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Category</th>
+        <th scope="col">Type</th>
+        <th scope="col">Description</th>
+        <th scope="col">Tag</th>
+      </tr>
+    </thead>
+    <tbody className="table-group-divider">
             <tr>
               <td>1,001</td>
               <td>random</td>
@@ -150,9 +151,11 @@ const HomePage = () => {
               <td>information</td>
               <td>text</td>
             </tr>
-          </tbody>
-        </table>
-      </div>
+    </tbody>
+  </table>
+</div>
+
+      <ElectionCharts />
     </main>
   );
 };
