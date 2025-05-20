@@ -1,14 +1,16 @@
 // types.mo
 module {
-  public type ElectionCandidate = {
-      name : Text;
-      hisParty : Text;
-      voteCountAsFirstChoice : Nat;
-      voteCountAsSecondChoice : Nat;
-      voteCountAsThirdChoice : Nat;
-      //icon :this will add later
-  };
-
+public type ElectionCandidate = {
+    nameEn : Text;
+    nameSi : Text;
+    nameTa : Text;
+    hisParty : Text;
+    hisSymbol : Text;
+    voteCountAsFirstChoice : Nat;
+    voteCountAsSecondChoice : Nat;
+    voteCountAsThirdChoice : Nat;
+    // icon : This will be added later
+};
   public type ElectionOfficer = {
       name : Text;
       role : Text;

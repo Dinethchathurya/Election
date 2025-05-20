@@ -7,37 +7,31 @@ const CreateCandidatePage = () => {
     register,
     handleSubmit,
     formState: { errors },
-
   } = useForm();
 
   const onSubmit = async (data) => {
     try {
-      console.log("Form Data:", data);
-
-      // ✅ Use stored election ID or fallback
       const storedElectionId =
         localStorage.getItem("electionId") || "a4tbr-q4aaa-aaaaa-qaafq-cai";
       const electionId = Principal.fromText(storedElectionId);
 
-      const officerId = Principal.fromText(data.officerId);
-      const officerName = data.officerName;
-
-      const response = await Election_backend.createElectionOfficer(
+      const response = await Election_backend.createCandidate(
         electionId,
-        officerId,
-        officerName,
-        data.pollingStation,
-        data.pollingDivision,
-        data.district
+        data.candidateNameEn,
+        data.candidateNameSi,
+        data.candidateNameTa,
+        data.candidateParty,
+        data.candidateSymbol
       );
 
-      console.log("Officer Created:", response);
-      alert("✅ Election Officer Created Successfully!");
+      console.log("Candidate Created:", response);
+      alert("✅ Candidate Created Successfully!");
     } catch (err) {
-      console.error("❌ Failed to create officer:", err);
+      console.error("❌ Failed to create candidate:", err);
       alert("Error: " + err.message);
     }
   };
+
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-body text-body">
       <h2 className="mb-4 fw-bold text-body mt-4">Create Candidate</h2>
@@ -46,28 +40,51 @@ const CreateCandidatePage = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="row g-4 p-4 bg-body text-body rounded shadow-sm"
       >
-        {/* Candidate Name */}
-        <div className="col-md-8">
-          <label htmlFor="candidateName" className="form-label">
-            Candidate Name
+        {/* Candidate Name - English */}
+        <div className="col-md-6">
+          <label htmlFor="candidateNameEn" className="form-label">
+            Candidate Name (English)
           </label>
           <input
-            type="text"
-            id="candidateName"
-            className={`form-control ${errors.candidateName ? "is-invalid" : ""}`}
-            placeholder="Enter full name"
-            {...register("candidateName", {
-              required: "Candidate name is required",
-              minLength: {
-                value: 2,
-                message: "Must be at least 2 characters",
-              },
-            })}
+            id="candidateNameEn"
+            className={`form-control ${errors.candidateNameEn ? "is-invalid" : ""}`}
+            placeholder="e.g., Dineth"
+            {...register("candidateNameEn", { required: "English name is required" })}
           />
-          {errors.candidateName && (
-            <div className="invalid-feedback">
-              {errors.candidateName.message}
-            </div>
+          {errors.candidateNameEn && (
+            <div className="invalid-feedback">{errors.candidateNameEn.message}</div>
+          )}
+        </div>
+
+        {/* Candidate Name - Sinhala */}
+        <div className="col-md-6">
+          <label htmlFor="candidateNameSi" className="form-label">
+            Candidate Name (Sinhala)
+          </label>
+          <input
+            id="candidateNameSi"
+            className={`form-control ${errors.candidateNameSi ? "is-invalid" : ""}`}
+            placeholder="e.g., දිනේත්"
+            {...register("candidateNameSi", { required: "Sinhala name is required" })}
+          />
+          {errors.candidateNameSi && (
+            <div className="invalid-feedback">{errors.candidateNameSi.message}</div>
+          )}
+        </div>
+
+        {/* Candidate Name - Tamil */}
+        <div className="col-md-6">
+          <label htmlFor="candidateNameTa" className="form-label">
+            Candidate Name (Tamil)
+          </label>
+          <input
+            id="candidateNameTa"
+            className={`form-control ${errors.candidateNameTa ? "is-invalid" : ""}`}
+            placeholder="e.g., தினேத்"
+            {...register("candidateNameTa", { required: "Tamil name is required" })}
+          />
+          {errors.candidateNameTa && (
+            <div className="invalid-feedback">{errors.candidateNameTa.message}</div>
           )}
         </div>
 
@@ -87,32 +104,38 @@ const CreateCandidatePage = () => {
           )}
         </div>
 
-        {/* Candidate Party */}
-        <div className="col-md-8">
+        {/* Political Party */}
+        <div className="col-md-6">
           <label htmlFor="candidateParty" className="form-label">
             Political Party
           </label>
           <input
-            type="text"
             id="candidateParty"
             className={`form-control ${errors.candidateParty ? "is-invalid" : ""}`}
-            placeholder="Enter party name"
-            {...register("candidateParty", {
-              required: "Political party is required",
-              minLength: {
-                value: 2,
-                message: "Must be at least 2 characters",
-              },
-            })}
+            placeholder="e.g., Future Vision Party"
+            {...register("candidateParty", { required: "Party name is required" })}
           />
           {errors.candidateParty && (
-            <div className="invalid-feedback">
-              {errors.candidateParty.message}
-            </div>
+            <div className="invalid-feedback">{errors.candidateParty.message}</div>
           )}
         </div>
 
-        {/* Submit Button */}
+        {/* Political Symbol */}
+        <div className="col-md-6">
+          <label htmlFor="candidateSymbol" className="form-label">
+            Political Symbol
+          </label>
+          <input
+            id="candidateSymbol"
+            className={`form-control ${errors.candidateSymbol ? "is-invalid" : ""}`}
+            placeholder="e.g., ⚡, 🐘"
+            {...register("candidateSymbol", { required: "Symbol is required" })}
+          />
+          {errors.candidateSymbol && (
+            <div className="invalid-feedback">{errors.candidateSymbol.message}</div>
+          )}
+        </div>
+
         <div className="col-12">
           <button type="submit" className="btn btn-primary">
             Create Candidate

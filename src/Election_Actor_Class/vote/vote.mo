@@ -246,6 +246,7 @@ module VoteModule {
                             let updatedCandidate : Type.ElectionCandidate = {
                                 name = candidate.name;
                                 hisParty = candidate.hisParty;
+                                hisSymbol = candidate.hisSymbol;
                                 voteCountAsFirstChoice = Nat32.toNat(Nat32.fromIntWrap(first));
                                 voteCountAsSecondChoice = Nat32.toNat(Nat32.fromIntWrap(second));
                                 voteCountAsThirdChoice = Nat32.toNat(Nat32.fromIntWrap(third));
