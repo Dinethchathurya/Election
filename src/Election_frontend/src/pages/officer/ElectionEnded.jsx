@@ -6,7 +6,7 @@ const ElectionEnded = ({ setTheme }) => {
   // ✅ Handler to verify the vote chain for a given officer
   const handleVerify = async () => {
     try {
-      const electionId = Principal.fromText("cbopz-duaaa-aaaaa-qaaka-cai");
+      const electionId = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
       console.log(
         "🔍 Verifying vote chain for Officer ID:",
         electionId.toText()
@@ -26,7 +26,7 @@ const ElectionEnded = ({ setTheme }) => {
   // ✅ Handler to calculate results based on current votes
   const handleCalculate = async () => {
     try {
-      const electionId = Principal.fromText("cbopz-duaaa-aaaaa-qaaka-cai");
+      const electionId = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
       console.log(
         "🧮 Calculating results for Officer ID:",
         electionId.toText()
@@ -47,7 +47,7 @@ const ElectionEnded = ({ setTheme }) => {
   // ✅ Handler to confirm final results and update candidate data
   const handleConfirm = async () => {
     try {
-      const electionId = Principal.fromText("cbopz-duaaa-aaaaa-qaaka-cai");
+      const electionId = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
       console.log(
         "🔐 Confirming final results for Officer ID:",
         electionId.toText()
@@ -69,7 +69,7 @@ const ElectionEnded = ({ setTheme }) => {
 
     const getResultsForOfficerFunction = async () => {
     try {
-      const electionId = Principal.fromText("cbopz-duaaa-aaaaa-qaaka-cai");
+      const electionId = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
       console.log(
         "🔐 Confirming final results for Officer ID:",
         electionId.toText()

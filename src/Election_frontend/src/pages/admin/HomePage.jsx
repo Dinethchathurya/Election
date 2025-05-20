@@ -1,165 +1,151 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchElections } from '../../store/electionSlice'; // ✅ Correct if file is there
-import ElectionCharts from './charts/ ElectionCharts';
+// import React, { useEffect, useState } from "react";
+// import { Election_backend } from "declarations/Election_backend";
+// import { Principal } from "@dfinity/principal";
+// import ElectionCharts from "./charts/ ElectionCharts";
 
+// const HomePage = () => {
+//   const [candidates, setCandidates] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState("");
+
+//   const electionId = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai"); // replace with dynamic ID if needed
+
+//   useEffect(() => {
+//     const fetchCandidates = async () => {
+//       try {
+//         setLoading(true);
+//         const result = await Election_backend.getAllResults(electionId);
+//         console.log("Candidate Results:", electionId);
+//         setCandidates(result);
+//         setError("");
+//       } catch (e) {
+//         console.error("❌ Error fetching candidates:", e);
+//         setError("Failed to load candidate results.");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchCandidates();
+//   }, []);
+
+//   return (
+//     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+//       <div className="my-4">
+//         <h1>Election</h1>
+//       </div>
+
+//       <ElectionCharts />
+
+//       <h2 className="mt-5 mb-3">📋 Final Result of Candidates</h2>
+
+//       {loading && <p>Loading candidate data...</p>}
+//       {error && <p className="text-danger">Error: {error}</p>}
+
+//       <div className="table-responsive">
+//         <table className="table table-bordered table-hover table-striped align-middle text-center shadow-sm rounded">
+//           <thead className="table-dark">
+//             <tr>
+//               <th>#</th>
+//               <th>Candidate Name</th>
+//               <th>Party</th>
+//               <th>First Choice</th>
+//               <th>Second Choice</th>
+//               <th>Third Choice</th>
+//             </tr>
+//           </thead>
+//           <tbody className="table-group-divider">
+//             {candidates.map((candidate, index) => (
+//               <tr key={candidate.name}>
+//                 <td>{index + 1}</td>
+//                 <td>{candidate.name}</td>
+//                 <td>{candidate.hisParty}</td>
+//                 <td>{candidate.voteCountAsFirstChoice}</td>
+//                 <td>{candidate.voteCountAsSecondChoice}</td>
+//                 <td>{candidate.voteCountAsThirdChoice}</td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       </div>
+//     </main>
+//   );
+// };
+
+// export default HomePage;
+
+import React, { useEffect, useState } from "react";
+import { Election_backend } from "declarations/Election_backend";
+import { Principal } from "@dfinity/principal";
+import ElectionCharts from "./charts/ ElectionCharts";
 
 const HomePage = () => {
+  const [candidates, setCandidates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const dispatch = useDispatch();
-  const { elections, loading, error } = useSelector(state => state.elections);
+  const electionId = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai"); // ✅ Replace if needed
 
   useEffect(() => {
-    dispatch(fetchElections());
-  }, [dispatch]);
+    const fetchCandidates = async () => {
+      try {
+        setLoading(true);
+        const result = await Election_backend.getAllResults(electionId);
+        console.log("✅ Candidate Results:", result);
+        setCandidates(result);
+        setError("");
+      } catch (e) {
+        console.error("❌ Error fetching candidates:", e);
+        setError("Failed to load candidate results.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchCandidates();
+  }, []);
 
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      <div>
-        <br></br>
-        <h1>Election</h1>
-        {loading && <p>Loading elections...</p>}
-        {error && <p>Error: {error}</p>}
-        <ul>
-          {elections.map((election) => (
-            <li key={election.id}>{election.name}</li>
-          ))}
-        </ul>
+      <div className="my-4">
+        <h1>📥 Election Summary</h1>
       </div>
-      <br></br>
 
-       <ElectionCharts />
+      <ElectionCharts />
 
-      <h2 className="mt-5 mb-3">📋 Sample Election Data Table</h2>
-<div className="table-responsive">
-  <table className="table table-bordered table-hover table-striped align-middle text-center shadow-sm rounded">
-    <thead className="table-dark">
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Category</th>
-        <th scope="col">Type</th>
-        <th scope="col">Description</th>
-        <th scope="col">Tag</th>
-      </tr>
-    </thead>
-    <tbody className="table-group-divider">
+      <h2 className="mt-5 mb-3">📋 Final Result of Candidates</h2>
+
+      {loading && <p>Loading candidate data...</p>}
+      {error && <p className="text-danger">Error: {error}</p>}
+
+      <div className="table-responsive">
+        <table className="table table-bordered table-hover table-striped align-middle text-center shadow-sm rounded">
+          <thead className="table-dark">
             <tr>
-              <td>1,001</td>
-              <td>random</td>
-              <td>data</td>
-              <td>placeholder</td>
-              <td>text</td>
+              <th>#</th>
+              <th>Candidate Name</th>
+              <th>Party</th>
+              <th>First Choice Votes</th>
+              <th>Second Choice Votes</th>
+              <th>Third Choice Votes</th>
             </tr>
-            <tr>
-              <td>1,002</td>
-              <td>placeholder</td>
-              <td>irrelevant</td>
-              <td>visual</td>
-              <td>layout</td>
-            </tr>
-            <tr>
-              <td>1,003</td>
-              <td>data</td>
-              <td>rich</td>
-              <td>dashboard</td>
-              <td>tabular</td>
-            </tr>
-            <tr>
-              <td>1,003</td>
-              <td>information</td>
-              <td>placeholder</td>
-              <td>illustrative</td>
-              <td>data</td>
-            </tr>
-            <tr>
-              <td>1,004</td>
-              <td>text</td>
-              <td>random</td>
-              <td>layout</td>
-              <td>dashboard</td>
-            </tr>
-            <tr>
-              <td>1,005</td>
-              <td>dashboard</td>
-              <td>irrelevant</td>
-              <td>text</td>
-              <td>placeholder</td>
-            </tr>
-            <tr>
-              <td>1,006</td>
-              <td>dashboard</td>
-              <td>illustrative</td>
-              <td>rich</td>
-              <td>data</td>
-            </tr>
-            <tr>
-              <td>1,007</td>
-              <td>placeholder</td>
-              <td>tabular</td>
-              <td>information</td>
-              <td>irrelevant</td>
-            </tr>
-            <tr>
-              <td>1,008</td>
-              <td>random</td>
-              <td>data</td>
-              <td>placeholder</td>
-              <td>text</td>
-            </tr>
-            <tr>
-              <td>1,009</td>
-              <td>placeholder</td>
-              <td>irrelevant</td>
-              <td>visual</td>
-              <td>layout</td>
-            </tr>
-            <tr>
-              <td>1,010</td>
-              <td>data</td>
-              <td>rich</td>
-              <td>dashboard</td>
-              <td>tabular</td>
-            </tr>
-            <tr>
-              <td>1,011</td>
-              <td>information</td>
-              <td>placeholder</td>
-              <td>illustrative</td>
-              <td>data</td>
-            </tr>
-            <tr>
-              <td>1,012</td>
-              <td>text</td>
-              <td>placeholder</td>
-              <td>layout</td>
-              <td>dashboard</td>
-            </tr>
-            <tr>
-              <td>1,013</td>
-              <td>dashboard</td>
-              <td>irrelevant</td>
-              <td>text</td>
-              <td>visual</td>
-            </tr>
-            <tr>
-              <td>1,014</td>
-              <td>dashboard</td>
-              <td>illustrative</td>
-              <td>rich</td>
-              <td>data</td>
-            </tr>
-            <tr>
-              <td>1,015</td>
-              <td>random</td>
-              <td>tabular</td>
-              <td>information</td>
-              <td>text</td>
-            </tr>
-    </tbody>
-  </table>
-</div>
+          </thead>
+          <tbody className="table-group-divider">
+            {candidates.map((candidate, index) => (
+              <tr key={`${candidate.name}-${index}`}>
+                <td>{index + 1}</td>
+                <td>{candidate.name}</td>
+                <td>{candidate.hisParty}</td>
+                <td>{candidate.voteCountAsFirstChoice.toString()}</td>
+                <td>{candidate.voteCountAsSecondChoice.toString()}</td>
+                <td>{candidate.voteCountAsThirdChoice.toString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </main>
   );
 };
+
 export default HomePage;

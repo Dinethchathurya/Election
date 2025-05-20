@@ -42,3 +42,4 @@ const electionSlice = createSlice({
 
 export const { addElection, removeElection } = electionSlice.actions;
 export default electionSlice.reducer;
+

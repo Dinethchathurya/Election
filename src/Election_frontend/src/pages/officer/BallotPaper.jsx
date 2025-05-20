@@ -8,16 +8,20 @@ import NavBar from "../../components/admin/NavBar";
 const BallotPaper = ({ setTheme }) => {
   const [selectedIndexes, setSelectedIndexes] = useState([]);
 
-  const candidates = [
-    { name: "Monasha tironi wijerathna", symbol: "●", lang: ["මොනාෂා", "மோனாஷா"] },
-    { name: "ජනක", symbol: "▲", lang: ["Janaka kjbhkjbkjb", "ஜனகா"] },
-    { name: "සමන්", symbol: "■", lang: ["Saman mjbkbkb", "சமன்"] },
-    { name: "නිමාල්", symbol: "▣", lang: ["Nimal bjbk,jnb jnbjn,kj", "நிமல்"] },
-    { name: "කුමාර්", symbol: "⬬", lang: ["Kumar nj,n,jn n,kjn,jn", "குமார்"] },
-    { name: "ජනක", symbol: "▲", lang: ["Janaka njn,jn ,jn,jn", "ஜனகா"] },
-    { name: "සමන්", symbol: "■", lang: ["Saman n,n,n nnjknlk", "சமன்"] },
-    { name: "නිමාල්", symbol: "▣", lang: ["Nimal nlkjnljknlknlknln", "நிமல்"] },
-  ];
+const candidates = [
+  { name: "Monasha", symbol: "●", lang: ["මොනාෂා", "மோனாஷா"] },
+  { name: "Ashini", symbol: "▲", lang: ["අෂිනි", "அஷினி"] },
+  { name: "Dineth", symbol: "■", lang: ["දිනෙත්", "தினேத்"] },
+  { name: "Janaka", symbol: "◆", lang: ["ජනක", "ஜனகா"] },
+  { name: "Saman", symbol: "♠", lang: ["සමන්", "சமன்"] },
+  { name: "Kamal", symbol: "♦", lang: ["කමල්", "கமல்"] },
+  { name: "Nimali", symbol: "♥", lang: ["නීමාලි", "நிமாலி"] },
+  { name: "Roshan", symbol: "★", lang: ["රොෂාන්", "ரோஷன்"] },
+  { name: "Tharindu", symbol: "☀", lang: ["තරින්දු", "தரிந்து"] },
+  { name: "Lakmini", symbol: "☘", lang: ["ලක්මිණි", "லக்மினி"] },
+  { name: "Kavindu", symbol: "✿", lang: ["කවිඳු", "கவிந்து"] },
+  { name: "Harini", symbol: "☁", lang: ["හරිනි", "ஹரிணி"] }
+];
 
   const handleSelection = (index) => {
     if (selectedIndexes.includes(index)) {
@@ -41,7 +45,7 @@ const BallotPaper = ({ setTheme }) => {
     const third = ordered[2] ? [ordered[2]] : [];
 
     try {
-      const canisterid = Principal.fromText("cbopz-duaaa-aaaaa-qaaka-cai");
+      const canisterid = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
       
       const response = await Election_backend.addVote(canisterid, first, second, third);
       console.log("✅ Vote submitted:", response);

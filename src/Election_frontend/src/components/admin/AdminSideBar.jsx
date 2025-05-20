@@ -107,7 +107,7 @@ const AdminSideBar = () => {
         </li>
       </ul>
 
-      <AdminIcon />
+      {/* <AdminIcon /> */}
     </div>
   );
 };
