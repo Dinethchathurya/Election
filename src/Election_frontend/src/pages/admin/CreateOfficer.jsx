@@ -3,9 +3,11 @@ import { Election_backend } from "declarations/Election_backend";
 import { Principal } from "@dfinity/principal";
 
 const CreateOfficer = () => {
-const storedElectionId = localStorage.getItem("electionId") || "a4tbr-q4aaa-aaaaa-qaafq-cai"; // default fallback
-const electionId = Principal.fromText(storedElectionId);
-
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const districts = [
     "Colombo", "Gampaha", "Kalutara", "Kandy", "Matale", "Nuwara Eliya",
@@ -14,21 +16,22 @@ const electionId = Principal.fromText(storedElectionId);
     "Polonnaruwa", "Badulla", "Monaragala", "Ratnapura", "Kegalle",
   ];
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
   const onSubmit = async (data) => {
     try {
-      const storedElectionId = localStorage.getItem("electionId");
-      if (!storedElectionId) {
-        alert("❌ No election ID found in local storage.");
-        return;
+      let storedElectionId = localStorage.getItem("electionId");
+      let electionId;
+
+      try {
+        electionId = Principal.fromText(
+          storedElectionId && storedElectionId.includes("-")
+            ? storedElectionId
+            : "a4tbr-q4aaa-aaaaa-qaafq-cai"
+        );
+      } catch {
+        console.warn("⚠️ Invalid electionId. Using fallback.");
+        electionId = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
       }
 
-      const electionId = Principal.fromText(storedElectionId);
       const officerId = Principal.fromText(data.officerId);
       const officerName = data.officerName;
 
@@ -45,7 +48,7 @@ const electionId = Principal.fromText(storedElectionId);
       alert("✅ Election Officer Created Successfully!");
     } catch (err) {
       console.error("❌ Failed to create officer:", err);
-      alert("Error: " + err.message);
+      alert("Error: " + (err.message || "Unexpected error occurred."));
     }
   };
 
@@ -58,21 +61,21 @@ const electionId = Principal.fromText(storedElectionId);
         className="row g-4 p-4 bg-body text-body rounded shadow-sm"
       >
         {/* Officer ID */}
-        {/* <div className="col-md-6">
+        <div className="col-md-6">
           <label htmlFor="officerId" className="form-label">Election Officer ID</label>
           <input
             id="officerId"
             className={`form-control ${errors.officerId ? "is-invalid" : ""}`}
-            placeholder="Enter Officer ID"
+            placeholder="Enter Officer Principal ID"
             {...register("officerId", { required: "Officer ID is required" })}
           />
           {errors.officerId && (
             <div className="invalid-feedback">{errors.officerId.message}</div>
           )}
-        </div> */}
+        </div>
 
         {/* Officer Name */}
-        <div className="col-12">
+        <div className="col-md-6">
           <label htmlFor="officerName" className="form-label">Election Officer Name</label>
           <input
             id="officerName"

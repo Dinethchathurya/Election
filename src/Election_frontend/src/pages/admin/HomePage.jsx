@@ -74,7 +74,7 @@ try {
             {candidates.map((candidate, index) => (
               <tr key={`${candidate.name}-${index}`}>
                 <td>{index + 1}</td>
-                <td>{candidate.name}</td>
+                <td>{candidate.nameEn}</td>
                 <td>{candidate.hisParty}</td>
                 <td>{candidate.voteCountAsFirstChoice.toString()}</td>
                 <td>{candidate.voteCountAsSecondChoice.toString()}</td>

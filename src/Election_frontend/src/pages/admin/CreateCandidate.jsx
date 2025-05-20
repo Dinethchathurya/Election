@@ -9,29 +9,40 @@ const CreateCandidatePage = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = async (data) => {
+const onSubmit = async (data) => {
+  try {
+    // Attempt to get the election ID from localStorage
+    const storedElectionId = localStorage.getItem("electionId");
+    let electionId;
+
     try {
-      const storedElectionId =
-        localStorage.getItem("electionId") || "a4tbr-q4aaa-aaaaa-qaafq-cai";
-      const electionId = Principal.fromText(storedElectionId);
-
-      const response = await Election_backend.createCandidate(
-        electionId,
-        data.candidateNameEn,
-        data.candidateNameSi,
-        data.candidateNameTa,
-        data.candidateParty,
-        data.candidateSymbol
+      electionId = Principal.fromText(
+        storedElectionId && storedElectionId.includes("-")
+          ? storedElectionId
+          : "a4tbr-q4aaa-aaaaa-qaafq-cai"
       );
-
-      console.log("Candidate Created:", response);
-      alert("✅ Candidate Created Successfully!");
-    } catch (err) {
-      console.error("❌ Failed to create candidate:", err);
-      alert("Error: " + err.message);
+    } catch (idError) {
+      console.warn("⚠️ Invalid electionId in localStorage. Using fallback.");
+      electionId = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
     }
-  };
 
+    // Call the backend to create the candidate
+    const response = await Election_backend.createCandidate(
+      electionId,
+      data.candidateNameEn,
+      data.candidateNameSi,
+      data.candidateNameTa,
+      data.candidateParty,
+      data.candidateSymbol
+    );
+
+    console.log("✅ Candidate Created:", response);
+    alert("✅ Candidate Created Successfully!");
+  } catch (err) {
+    console.error("❌ Failed to create candidate:", err);
+    alert("Error: " + (err.message || "Unexpected error occurred."));
+  }
+};
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-body text-body">
       <h2 className="mb-4 fw-bold text-body mt-4">Create Candidate</h2>
