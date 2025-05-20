@@ -17,6 +17,7 @@ const HomePage = () => {
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div>
+        <br></br>
         <h1>Election</h1>
         {loading && <p>Loading elections...</p>}
         {error && <p>Error: {error}</p>}
@@ -26,6 +27,10 @@ const HomePage = () => {
           ))}
         </ul>
       </div>
+      <br></br>
+
+       <ElectionCharts />
+
       <h2 className="mt-5 mb-3">📋 Sample Election Data Table</h2>
 <div className="table-responsive">
   <table className="table table-bordered table-hover table-striped align-middle text-center shadow-sm rounded">
@@ -154,8 +159,6 @@ const HomePage = () => {
     </tbody>
   </table>
 </div>
-
-      <ElectionCharts />
     </main>
   );
 };
