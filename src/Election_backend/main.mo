@@ -114,4 +114,31 @@ actor Election {
 
   };
 
+  public shared(msg) func calculateResultsForOfficer(electionId: Principal): async [(Text, [Int])] {
+    let electionClass : ElectionActorClass.Election_Actor_Class = await getElection_Actor_Class(electionId);
+    electionClass.calculateResultsForOfficerFunction(msg.caller);
+
+    let result :[(Text, [Int])] = await getResultsForOfficer(electionId);
+    return result;
+
+  };
+
+  public shared(msg) func getResultsForOfficer(electionId: Principal) : async [(Text, [Int])]{
+    let electionClass : ElectionActorClass.Election_Actor_Class = await getElection_Actor_Class(electionId);
+    return await electionClass.getResultsForOfficerFunction(msg.caller);
+
+  };
+
+  public shared(msg) func confirmResultsForOfficer(electionId: Principal) : async Text{
+    let electionClass : ElectionActorClass.Election_Actor_Class = await getElection_Actor_Class(electionId);
+    return await electionClass.confirmResultsForOfficerFunction(msg.caller);
+
+  };
+
+  public func getAllResults(electionId: Principal) : async [Type.ElectionCandidate]{
+    let electionClass : ElectionActorClass.Election_Actor_Class = await getElection_Actor_Class(electionId);
+    return await electionClass.getAllResultsFunction();
+
+  };
+
 };

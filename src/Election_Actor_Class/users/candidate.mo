@@ -1,5 +1,6 @@
 import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
+import Array "mo:base/Array";
 import Type "../types/Type";
 
 module CandidateModule {
@@ -21,6 +22,7 @@ module CandidateModule {
             return "Success";
         };
 
+
         public func getElectionCandidates(name : Text) : Type.ElectionCandidate {
 
             var notFundCandidate : Type.ElectionCandidate = {
@@ -28,7 +30,7 @@ module CandidateModule {
                 hisParty = "not found";
                 voteCountAsFirstChoice = 0;
                 voteCountAsSecondChoice = 0;
-                voteCountAsThirdChoice = 0
+                voteCountAsThirdChoice = 0;
             };
 
             var candidate : Type.ElectionCandidate = switch (electionCandidates.get(name)) {
@@ -37,6 +39,23 @@ module CandidateModule {
 
             };
             return candidate;
+        };
+
+
+        public func updateElectionCandidate(updated : Type.ElectionCandidate) : async Text {
+            electionCandidates.put(updated.name, updated);
+            return "Candidate updated";
+        };
+
+
+        public func getAllResults() : async [Type.ElectionCandidate] {
+            var results : [Type.ElectionCandidate] = [];
+
+            for ((_, candidate) in electionCandidates.entries()) {
+                results := Array.append(results, [candidate]);
+            };
+
+            return results;
         };
 
     };

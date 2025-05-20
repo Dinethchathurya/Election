@@ -4,8 +4,10 @@ import Principal "mo:base/Principal";
 import List "mo:base/List";
 import Type "../types/Type";
 import Nat32 "mo:base/Nat32";
+import Nat "mo:base/Nat";
 import Iter "mo:base/Iter";
 import Array "mo:base/Array";
+import CandidateModule "../users/candidate";
 
 module VoteModule {
 
@@ -90,60 +92,6 @@ module VoteModule {
             Principal.equal, // Equality function for Principal
             Principal.hash // Hash function for Principal
         );
-
-        // this function refers wrong Hashmap and ai is confusing what i need to do.
-        // SO I need to code from scratch to get the result of the election
-
-        // shared functions cannot use here because this is not inside actor class. i need to call this function inside actor class with msg as parameter
-
-        // Function to calculate election results by tallying votes
-        // public func calculateResults() : async [(Text, Nat)] {
-
-        //     var voteCounts = HashMap.HashMap<Text, Nat>(1, Text.equal, Text.hash);
-
-        //     // Iterate through each officer's submitted votes
-        //     for ((officer, voteList) in votesByOfficer.entries()) {
-        //         let votesArray = List.toArray(voteList);
-
-        //         // Go through each vote
-        //         for (vote in votesArray.vals()) {
-        //             // First choice gets 3 points
-        //             let firstScore = switch (voteCounts.get(vote.firstChoice)) {
-        //                 case (null) 0;
-        //                 case (?v) v;
-        //             };
-        //             voteCounts.put(vote.firstChoice, firstScore + 3);
-
-        //             // Second choice gets 2 points (if exists)
-        //             switch (vote.secondChoice) {
-        //                 case (?second) {
-        //                     let secondScore = switch (voteCounts.get(second)) {
-        //                         case (null) 0;
-        //                         case (?v) v;
-        //                     };
-        //                     voteCounts.put(second, secondScore + 2);
-        //                 };
-        //                 case (null) {};
-        //             };
-
-        //             // Third choice gets 1 point (if exists)
-        //             switch (vote.thirdChoice) {
-        //                 case (?third) {
-        //                     let thirdScore = switch (voteCounts.get(third)) {
-        //                         case (null) 0;
-        //                         case (?v) v;
-        //                     };
-        //                     voteCounts.put(third, thirdScore + 1);
-        //                 };
-        //                 case (null) {};
-        //             };
-        //         }
-        //     };
-
-        //     // Convert HashMap to array for return
-        //     let resultList = Iter.toArray(voteCounts.entries());
-        //     return resultList;
-        // }
 
         public func calculateResultsForOfficer(officerId : Principal) {
             let votes = switch (votesByOfficer.get(officerId)) {
@@ -277,9 +225,44 @@ module VoteModule {
             };
         };
 
-    };
-    // End of VoteModule
+        public func confirmResultsForOfficer(
+            officerId : Principal,
+            candidateClass : CandidateModule.CandidateClass,
+        ) : async Text {
+            switch (resultsByOfficer.get(officerId)) {
+                case null {
+                    return "❌ No results found for this officer.";
+                };
+                case (?innerMap) {
+                    for ((candidateName, voteList) in innerMap.entries()) {
+                        let votesArray = List.toArray(voteList);
+                        let first = if (votesArray.size() > 0) votesArray[0] else 0;
+                        let second = if (votesArray.size() > 1) votesArray[1] else 0;
+                        let third = if (votesArray.size() > 2) votesArray[2] else 0;
 
+                        let candidate = candidateClass.getElectionCandidates(candidateName);
+
+                        if (candidate.name != "not found") {
+                            let updatedCandidate : Type.ElectionCandidate = {
+                                name = candidate.name;
+                                hisParty = candidate.hisParty;
+                                voteCountAsFirstChoice = Nat32.toNat(Nat32.fromIntWrap(first));
+                                voteCountAsSecondChoice = Nat32.toNat(Nat32.fromIntWrap(second));
+                                voteCountAsThirdChoice = Nat32.toNat(Nat32.fromIntWrap(third));
+                            };
+
+                            // ✅ Use public method instead of trying to access private map
+                            ignore candidateClass.updateElectionCandidate(updatedCandidate);
+                        };
+                    };
+                    return "✅ Results confirmed and candidates updated.";
+                };
+            };
+        }
+
+    };
+
+    // End of VoteModule
     // Return results as [(candidateName, [firstVotes, secondVotes, thirdVotes])]
 
 };

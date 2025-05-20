@@ -9,7 +9,7 @@ const BallotPaper = ({ setTheme }) => {
   const [selectedIndexes, setSelectedIndexes] = useState([]);
 
   const candidates = [
-    { name: "මොනාෂා", symbol: "●", lang: ["Monasha tironi wijerathna", "மோனாஷா"] },
+    { name: "Monasha tironi wijerathna", symbol: "●", lang: ["මොනාෂා", "மோனாஷா"] },
     { name: "ජනක", symbol: "▲", lang: ["Janaka kjbhkjbkjb", "ஜனகா"] },
     { name: "සමන්", symbol: "■", lang: ["Saman mjbkbkb", "சமன்"] },
     { name: "නිමාල්", symbol: "▣", lang: ["Nimal bjbk,jnb jnbjn,kj", "நிமல்"] },
@@ -41,7 +41,7 @@ const BallotPaper = ({ setTheme }) => {
     const third = ordered[2] ? [ordered[2]] : [];
 
     try {
-      const canisterid = Principal.fromText("aovwi-4maaa-aaaaa-qaagq-cai");
+      const canisterid = Principal.fromText("cbopz-duaaa-aaaaa-qaaka-cai");
       
       const response = await Election_backend.addVote(canisterid, first, second, third);
       console.log("✅ Vote submitted:", response);

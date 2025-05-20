@@ -79,7 +79,6 @@ actor class Election_Actor_Class(electionType: Text, year : Text) = this{
 
     public func calculateResultsForOfficerFunction(caller: Principal)  {
         voteModuleInstance.calculateResultsForOfficer(caller);
-     
     };
 
 
@@ -87,6 +86,18 @@ actor class Election_Actor_Class(electionType: Text, year : Text) = this{
         var results : [(Text, [Int])] = [];
         results := await voteModuleInstance.getResultsForOfficer(caller);
         return results;
+    };
+
+
+    public func confirmResultsForOfficerFunction(officerId : Principal) : async Text {
+        var results : Text =  await voteModuleInstance.confirmResultsForOfficer(officerId, candidateModuleInstance);
+        return results;
+    };
+
+
+    public func getAllResultsFunction(): async [Type.ElectionCandidate] {
+        return await candidateModuleInstance.getAllResults();
+
     };
     
 };

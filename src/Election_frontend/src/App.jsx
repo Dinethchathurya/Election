@@ -27,7 +27,7 @@ function App() {
     <Routes>
       {/* Admin dashboard layout */}
 
-      <Route path="/" element={<UserHomePage setTheme={setTheme} />}></Route>
+      <Route path="/home" element={<UserHomePage setTheme={setTheme} />}></Route>
       <Route path="/ballotPaper" element={<BallotPaper setTheme={setTheme} />}></Route>
       <Route path="/auth" element={<AuthPage setTheme={setTheme} />}></Route>
       <Route path="/end" element={<ElectionEnded setTheme={setTheme} />}></Route>
