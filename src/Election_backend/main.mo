@@ -135,12 +135,6 @@ actor Election {
 
   };
 
-  // public func getAllResults(electionId: Principal) : async [Type.ElectionCandidate]{
-  //   let electionClass : ElectionActorClass.Election_Actor_Class = await getElection_Actor_Class(electionId);
-  //   return await electionClass.getAllResultsFunction();
-
-  // };
-
   public shared func getAllResults(electionId : Principal) : async [Type.ElectionCandidate] {
     let electionClass = await getElection_Actor_Class(electionId);
     return await electionClass.getAllResultsFunction();
