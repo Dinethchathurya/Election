@@ -225,42 +225,42 @@ module VoteModule {
             };
         };
 
-public func confirmResultsForOfficer(
-    officerId : Principal,
-    candidateClass : CandidateModule.CandidateClass,
-) : async Text {
-    switch (resultsByOfficer.get(officerId)) {
-        case null {
-            return "❌ No results found for this officer.";
-        };
-        case (?innerMap) {
-            for ((candidateName, voteList) in innerMap.entries()) {
-                let votesArray = List.toArray(voteList);
-                let first = if (votesArray.size() > 0) votesArray[0] else 0;
-                let second = if (votesArray.size() > 1) votesArray[1] else 0;
-                let third = if (votesArray.size() > 2) votesArray[2] else 0;
+        public func confirmResultsForOfficer(
+            officerId : Principal,
+            candidateClass : CandidateModule.CandidateClass,
+        ) : async Text {
+            switch (resultsByOfficer.get(officerId)) {
+                case null {
+                    return "❌ No results found for this officer.";
+                };
+                case (?innerMap) {
+                    for ((candidateName, voteList) in innerMap.entries()) {
+                        let votesArray = List.toArray(voteList);
+                        let first = if (votesArray.size() > 0) votesArray[0] else 0;
+                        let second = if (votesArray.size() > 1) votesArray[1] else 0;
+                        let third = if (votesArray.size() > 2) votesArray[2] else 0;
 
-                let candidate = candidateClass.getElectionCandidates(candidateName);
+                        let candidate = candidateClass.getElectionCandidates(candidateName);
 
-                if (candidate.nameEn != "not found") {
-                    let updatedCandidate : Type.ElectionCandidate = {
-                        nameEn = candidate.nameEn;
-                        nameSi = candidate.nameSi;
-                        nameTa = candidate.nameTa;
-                        hisParty = candidate.hisParty;
-                        hisSymbol = candidate.hisSymbol;
-                        voteCountAsFirstChoice = Nat32.toNat(Nat32.fromIntWrap(first));
-                        voteCountAsSecondChoice = Nat32.toNat(Nat32.fromIntWrap(second));
-                        voteCountAsThirdChoice = Nat32.toNat(Nat32.fromIntWrap(third));
+                        if (candidate.nameEn != "not found") {
+                            let updatedCandidate : Type.ElectionCandidate = {
+                                nameEn = candidate.nameEn;
+                                nameSi = candidate.nameSi;
+                                nameTa = candidate.nameTa;
+                                hisParty = candidate.hisParty;
+                                hisSymbol = candidate.hisSymbol;
+                                voteCountAsFirstChoice = Nat32.toNat(Nat32.fromIntWrap(first));
+                                voteCountAsSecondChoice = Nat32.toNat(Nat32.fromIntWrap(second));
+                                voteCountAsThirdChoice = Nat32.toNat(Nat32.fromIntWrap(third));
+                            };
+
+                            ignore candidateClass.updateElectionCandidate(updatedCandidate);
+                        };
                     };
-
-                    ignore candidateClass.updateElectionCandidate(updatedCandidate);
+                    return "✅ Results confirmed and candidates updated.";
                 };
             };
-            return "✅ Results confirmed and candidates updated.";
-        };
-    };
-}
+        }
 
     };
 
