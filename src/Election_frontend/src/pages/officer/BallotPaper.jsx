@@ -5,7 +5,7 @@ import { Principal } from "@dfinity/principal";
 import NavBar from "../../components/admin/NavBar";
 
 
-const BallotPaper = () => {
+const BallotPaper = ({ setTheme }) => {
   const [selectedIndexes, setSelectedIndexes] = useState([]);
 
   const candidates = [
@@ -58,9 +58,9 @@ const BallotPaper = () => {
   return (
     <div className="d-flex flex-column min-vh-100 bg-body text-body">
 
-      <NavBar />
+      <NavBar setTheme={setTheme }/>
 
-      <main className="container-sm flex-fill d-flex flex-column justify-content-between py-4">
+      <main className="container-sm flex-fill d-flex flex-column justify-content-between py-4 text-body bg-body">
         <div>
           <h2 className="fw-bold mb-3">Ballot Paper</h2>
           <div className="ballot-container mb-4 overflow-auto">

@@ -4,6 +4,9 @@ import AdminHomePage from "./pages/admin/AdminLayout";
 import BallotPaper from "./pages/officer/BallotPaper";
 import AuthPage from "./pages/AuthPage";
 import ElectionEnded from "./pages/officer/ElectionEnded";
+import UserHomePage from "./pages/user/UserHomePage";
+import { Result } from "postcss";
+import ResultPage from "./pages/user/ResultPage";
 
 function App() {
   useEffect(() => {
@@ -23,14 +26,17 @@ function App() {
   return (
     <Routes>
       {/* Admin dashboard layout */}
+
+      <Route path="/" element={<UserHomePage setTheme={setTheme} />}></Route>
+      <Route path="/ballotPaper" element={<BallotPaper setTheme={setTheme} />}></Route>
+      <Route path="/auth" element={<AuthPage setTheme={setTheme} />}></Route>
+      <Route path="/end" element={<ElectionEnded setTheme={setTheme} />}></Route>
+      <Route path="/resultPage" element={<ResultPage setTheme={setTheme} />}></Route>
+
+      {/* admin */}
       <Route path="/*" element={<AdminHomePage setTheme={setTheme} />}>
         {/* Nested routes inside Admin Layout */}
       </Route>
-      <Route path="/ballotPaper" element={<BallotPaper setTheme={setTheme} />}>
-        {/* Nested routes inside Admin Layout */}
-      </Route>
-      <Route path="/auth" element={<AuthPage setTheme={setTheme} />}></Route>
-      <Route path="/end" element={<ElectionEnded setTheme={setTheme} />}></Route>
     </Routes>
 
   );

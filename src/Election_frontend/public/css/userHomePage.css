@@ -1,0 +1,26 @@
+.left-banner {
+  background-image: url("/assets/flag.png");
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+}
+
+.emblem {
+  height: 100px;
+}
+
+.lang-btn {
+  background-color: #f1b722; /* National emblem yellow */
+  color: #741c28; /* Maroon from the Sri Lankan flag */
+  font-weight: bold;
+  border: none;
+  padding: 12px 40px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease;
+}
+
+.lang-btn:hover {
+  transform: scale(1.05);
+}
