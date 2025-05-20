@@ -28,6 +28,10 @@ const CreateElectionPage = () => {
       let newid = await Election_backend.createElection(electionType, year);
       console.log(newid.toText());
 
+
+      localStorage.setItem("newElectionId", electionId);
+
+
       // ✅ Dispatch to Redux
       dispatch(addElection({
         id: newid.toText(),
@@ -37,6 +41,8 @@ const CreateElectionPage = () => {
         candidates: [],
         officers: [],
       }));
+
+
 
     } catch (e) {
       console.log(e);

@@ -10,43 +10,34 @@ const CreateCandidatePage = () => {
     reset,
   } = useForm();
 
-
-const onSubmit = async (data) => {
-  console.log("Candidate Submitted:", data);
-
-  try {
-    // Validate and convert the electionId
-    let electionId;
+  const onSubmit = async (data) => {
     try {
-      electionId = Principal.fromText(data.electionId.trim());
-      console.log("✅ Election ID is a valid Principal:", electionId.toText());
-    } catch (convError) {
-      console.error("❌ Invalid Election ID:", data.electionId);
-      alert("Invalid Election Canister ID. Please check the format.");
-      return;
+      console.log("Form Data:", data);
+
+      // ✅ Use stored election ID or fallback
+      const storedElectionId =
+        localStorage.getItem("electionId") || "a4tbr-q4aaa-aaaaa-qaafq-cai";
+      const electionId = Principal.fromText(storedElectionId);
+
+      const officerId = Principal.fromText(data.officerId);
+      const officerName = data.officerName;
+
+      const response = await Election_backend.createElectionOfficer(
+        electionId,
+        officerId,
+        officerName,
+        data.pollingStation,
+        data.pollingDivision,
+        data.district
+      );
+
+      console.log("Officer Created:", response);
+      alert("✅ Election Officer Created Successfully!");
+    } catch (err) {
+      console.error("❌ Failed to create officer:", err);
+      alert("Error: " + err.message);
     }
-
-    const candidateName = data.candidateName.trim();
-    const candidateParty = data.candidateParty.trim();
-
-    console.log("Candidate Name:", candidateName);
-    console.log("Candidate Party:", candidateParty);
-
-    const result = await Election_backend.createCandidate(
-      electionId,
-      candidateName,
-      candidateParty
-    );
-
-    console.log("Candidate creation result:", result);
-    alert("✅ Candidate created successfully!");
-    reset();
-  } catch (e) {
-    console.error("❌ Error creating candidate:", e);
-    alert("Failed to create candidate: " + e.message);
-  }
-};
-
+  };
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-body text-body">
       <h2 className="mb-4 fw-bold text-body mt-4">Create Candidate</h2>
@@ -80,28 +71,19 @@ const onSubmit = async (data) => {
           )}
         </div>
 
-        {/* Election ID */}
-        <div className="col-md-8">
-          <label htmlFor="electionId" className="form-label">
-            Election ID
+        {/* NIC Number */}
+        <div className="col-md-6">
+          <label htmlFor="nic" className="form-label">
+            NIC Number
           </label>
           <input
-            type="text"
-            id="electionId"
-            className={`form-control ${errors.electionId ? "is-invalid" : ""}`}
-            placeholder="Enter canister ID"
-            {...register("electionId", {
-              required: "Election ID is required",
-              minLength: {
-                value: 2,
-                message: "Must be at least 2 characters",
-              },
-            })}
+            id="nic"
+            className={`form-control ${errors.nic ? "is-invalid" : ""}`}
+            placeholder="Enter NIC Number"
+            {...register("nic", { required: "NIC number is required" })}
           />
-          {errors.electionId && (
-            <div className="invalid-feedback">
-              {errors.electionId.message}
-            </div>
+          {errors.nic && (
+            <div className="invalid-feedback">{errors.nic.message}</div>
           )}
         </div>
 

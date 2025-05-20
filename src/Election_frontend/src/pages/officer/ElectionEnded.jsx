@@ -6,7 +6,21 @@ const ElectionEnded = ({ setTheme }) => {
   // ✅ Handler to verify the vote chain for a given officer
   const handleVerify = async () => {
     try {
-      const electionId = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
+      // Define a fallback electionId string (must be a valid Principal text)
+      const DEFAULT_ELECTION_ID = "a4tbr-q4aaa-aaaaa-qaafq-cai"; // replace with a real Principal if needed
+      
+      const storedId = localStorage.getItem("electionId");
+      
+      // Fallback to default if null or invalid
+      let electionId;
+      
+      try {
+        electionId = Principal.fromText(storedId ?? DEFAULT_ELECTION_ID);
+      } catch (e) {
+        console.warn("Invalid or missing election ID. Using default.");
+        electionId = Principal.fromText(DEFAULT_ELECTION_ID);
+        localStorage.setItem("electionId", DEFAULT_ELECTION_ID); // Optional: store fallback
+      }
       console.log(
         "🔍 Verifying vote chain for Officer ID:",
         electionId.toText()

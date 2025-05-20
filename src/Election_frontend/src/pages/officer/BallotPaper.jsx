@@ -45,7 +45,9 @@ const candidates = [
     const third = ordered[2] ? [ordered[2]] : [];
 
     try {
-      const canisterid = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
+
+        localStorage.get("newElectionId", electionId);
+      const canisterid = Principal.fromText(localStorage.getItem("electionId"));
       
       const response = await Election_backend.addVote(canisterid, first, second, third);
       console.log("✅ Vote submitted:", response);
