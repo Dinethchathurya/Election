@@ -5,6 +5,8 @@ import electionSlice from './electionSlice';
 const store = configureStore({
   reducer: {
     elections: electionSlice,
+    
+
     // auth: authSlice,
   }
 });
