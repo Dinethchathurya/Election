@@ -2,102 +2,72 @@ import { Election_backend } from "declarations/Election_backend";
 import { Principal } from "@dfinity/principal";
 import NavBar from "../../components/admin/NavBar";
 
+const DEFAULT_ELECTION_ID = "a4tbr-q4aaa-aaaaa-qaafq-cai";
+
+const getElectionId = () => {
+  const stored = localStorage.getItem("electionId");
+  try {
+    const id = Principal.fromText(stored && stored.includes("-") ? stored : DEFAULT_ELECTION_ID);
+    return id;
+  } catch {
+    console.warn("⚠️ Invalid or missing electionId. Falling back to default.");
+    localStorage.setItem("electionId", DEFAULT_ELECTION_ID);
+    return Principal.fromText(DEFAULT_ELECTION_ID);
+  }
+};
+
 const ElectionEnded = ({ setTheme }) => {
-  // ✅ Handler to verify the vote chain for a given officer
+
   const handleVerify = async () => {
     try {
-      // Define a fallback electionId string (must be a valid Principal text)
-      const DEFAULT_ELECTION_ID = "a4tbr-q4aaa-aaaaa-qaafq-cai"; // replace with a real Principal if needed
-      
-      const storedId = localStorage.getItem("electionId");
-      
-      // Fallback to default if null or invalid
-      let electionId;
-      
-      try {
-        electionId = Principal.fromText(storedId ?? DEFAULT_ELECTION_ID);
-      } catch (e) {
-        console.warn("Invalid or missing election ID. Using default.");
-        electionId = Principal.fromText(DEFAULT_ELECTION_ID);
-        localStorage.setItem("electionId", DEFAULT_ELECTION_ID); // Optional: store fallback
-      }
-      console.log(
-        "🔍 Verifying vote chain for Officer ID:",
-        electionId.toText()
-      );
+      const electionId = getElectionId();
+      console.log("🔍 Verifying vote chain:", electionId.toText());
 
       const result = await Election_backend.verifyVoteChain(electionId);
-
-      console.log("✅ Vote chain verification result:", result);
       alert(result ? "✅ Vote chain is valid!" : "❌ Vote chain is invalid.");
-
     } catch (e) {
       console.error("❌ Error verifying vote chain:", e);
       alert("Failed to verify vote chain: " + e.message);
     }
   };
 
-  // ✅ Handler to calculate results based on current votes
   const handleCalculate = async () => {
     try {
-      const electionId = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
-      console.log(
-        "🧮 Calculating results for Officer ID:",
-        electionId.toText()
-      );
+      const electionId = getElectionId();
+      console.log("🧮 Calculating results:", electionId.toText());
 
-      const result =
-        await Election_backend.calculateResultsForOfficer(electionId);
-
-      console.log("✅ Results calculated successfully:", result);
+      await Election_backend.calculateResultsForOfficer(electionId);
       alert("✅ Vote results calculated successfully!");
-
     } catch (e) {
       console.error("❌ Error calculating results:", e);
       alert("Failed to calculate results: " + e.message);
     }
   };
 
-  // ✅ Handler to confirm final results and update candidate data
   const handleConfirm = async () => {
     try {
-      const electionId = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
-      console.log(
-        "🔐 Confirming final results for Officer ID:",
-        electionId.toText()
-      );
+      const electionId = getElectionId();
+      console.log("🔐 Confirming results:", electionId.toText());
 
-      const result =
-        await Election_backend.confirmResultsForOfficer(electionId);
-
-      console.log("✅ Results confirmed:", result);
-      alert("✅ Results confirmed and saved to candidates: " + result);
-
+      const result = await Election_backend.confirmResultsForOfficer(electionId);
+      alert("✅ Results confirmed: " + result);
     } catch (e) {
       console.error("❌ Error confirming results:", e);
       alert("Failed to confirm results: " + e.message);
     }
   };
 
-  
-
-    const getResultsForOfficerFunction = async () => {
+  const getResultsForOfficerFunction = async () => {
     try {
-      const electionId = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
-      console.log(
-        "🔐 Confirming final results for Officer ID:",
-        electionId.toText()
-      );
+      const electionId = getElectionId();
+      console.log("📦 Fetching officer results:", electionId.toText());
 
-      const result =
-        await Election_backend.getResultsForOfficer(electionId);
-
-      console.log("✅ Results confirmed:", result);
-      alert("✅ Results confirmed and saved to candidates: " + result);
-
+      const result = await Election_backend.getResultsForOfficer(electionId);
+      console.log("✅ Results retrieved:", result);
+      alert("✅ Officer results loaded!");
     } catch (e) {
-      console.error("❌ Error confirming results:", e);
-      alert("Failed to confirm results: " + e.message);
+      console.error("❌ Error fetching officer results:", e);
+      alert("Failed to fetch officer results: " + e.message);
     }
   };
 
@@ -131,15 +101,13 @@ const ElectionEnded = ({ setTheme }) => {
           <button className="btn btn-success" onClick={handleConfirm}>
             ✅ Confirm Results
           </button>
-
           <button className="btn btn-danger" onClick={getResultsForOfficerFunction}>
-            reject results
+            🚫 Reject Results
           </button>
         </div>
       </main>
     </>
   );
-
 };
 
 export default ElectionEnded;
