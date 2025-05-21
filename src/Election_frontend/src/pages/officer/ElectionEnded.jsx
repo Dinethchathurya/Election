@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { Election_backend } from "declarations/Election_backend";
 import { Principal } from "@dfinity/principal";
 import NavBar from "../../components/admin/NavBar";
@@ -7,7 +8,9 @@ const DEFAULT_ELECTION_ID = "a4tbr-q4aaa-aaaaa-qaafq-cai";
 const getElectionId = () => {
   const stored = localStorage.getItem("electionId");
   try {
-    const id = Principal.fromText(stored && stored.includes("-") ? stored : DEFAULT_ELECTION_ID);
+    const id = Principal.fromText(
+      stored && stored.includes("-") ? stored : DEFAULT_ELECTION_ID
+    );
     return id;
   } catch {
     console.warn("⚠️ Invalid or missing electionId. Falling back to default.");
@@ -17,12 +20,11 @@ const getElectionId = () => {
 };
 
 const ElectionEnded = ({ setTheme }) => {
+  const [results, setResults] = useState([]);
 
   const handleVerify = async () => {
     try {
       const electionId = getElectionId();
-      console.log("🔍 Verifying vote chain:", electionId.toText());
-
       const result = await Election_backend.verifyVoteChain(electionId);
       alert(result ? "✅ Vote chain is valid!" : "❌ Vote chain is invalid.");
     } catch (e) {
@@ -34,21 +36,19 @@ const ElectionEnded = ({ setTheme }) => {
   const handleCalculate = async () => {
     try {
       const electionId = getElectionId();
-      console.log("🧮 Calculating results:", electionId.toText());
-
       await Election_backend.calculateResultsForOfficer(electionId);
-      alert("✅ Vote results calculated successfully!");
+      const result = await Election_backend.getAllResults(electionId); // ✅ Updated
+      setResults(result);
+      alert("✅ Vote results calculated and displayed!");
     } catch (e) {
       console.error("❌ Error calculating results:", e);
-      alert("Failed to calculate results: " + e.message);
+      alert("Failed to calculate and display results: " + e.message);
     }
   };
 
   const handleConfirm = async () => {
     try {
       const electionId = getElectionId();
-      console.log("🔐 Confirming results:", electionId.toText());
-
       const result = await Election_backend.confirmResultsForOfficer(electionId);
       alert("✅ Results confirmed: " + result);
     } catch (e) {
@@ -58,13 +58,12 @@ const ElectionEnded = ({ setTheme }) => {
   };
 
   const getResultsForOfficerFunction = async () => {
+    await handleConfirm(); // ✅ Confirm before loading
     try {
       const electionId = getElectionId();
-      console.log("📦 Fetching officer results:", electionId.toText());
-
-      const result = await Election_backend.getResultsForOfficer(electionId);
-      console.log("✅ Results retrieved:", result);
-      alert("✅ Officer results loaded!");
+      const result = await Election_backend.getAllResults(electionId); // ✅ Updated
+      setResults(result);
+      alert("✅ Final officer results loaded!");
     } catch (e) {
       console.error("❌ Error fetching officer results:", e);
       alert("Failed to fetch officer results: " + e.message);
@@ -98,13 +97,41 @@ const ElectionEnded = ({ setTheme }) => {
           <button className="btn btn-outline-warning" onClick={handleCalculate}>
             🧮 Calculate Results
           </button>
-          <button className="btn btn-success" onClick={handleConfirm}>
-            ✅ Confirm Results
-          </button>
           <button className="btn btn-danger" onClick={getResultsForOfficerFunction}>
-            🚫 Reject Results
+            📢 Confirm and Publish Results
           </button>
         </div>
+
+        {/* Results Table */}
+        {results.length > 0 && (
+          <div className="mt-5 w-100" style={{ maxWidth: "800px" }}>
+            <h3 className="fw-bold mb-3">📊 Final Election Results</h3>
+            <table className="table table-bordered table-hover table-striped text-center">
+              <thead className="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>Candidate</th>
+                  <th>Party</th>
+                  <th>1st Choice</th>
+                  <th>2nd Choice</th>
+                  <th>3rd Choice</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.map((candidate, i) => (
+                  <tr key={i}>
+                    <td>{i + 1}</td>
+                    <td>{candidate.nameEn}</td>
+                    <td>{candidate.hisParty}</td>
+                    <td>{candidate.voteCountAsFirstChoice.toString()}</td>
+                    <td>{candidate.voteCountAsSecondChoice.toString()}</td>
+                    <td>{candidate.voteCountAsThirdChoice.toString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </main>
     </>
   );
