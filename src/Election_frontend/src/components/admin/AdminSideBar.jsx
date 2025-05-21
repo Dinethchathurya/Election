@@ -48,7 +48,7 @@ const AdminSideBar = () => {
             Create Election
           </NavLink>
         </li>
-
+{/* 
         <li>
           <NavLink
             to="/create-admin"
@@ -66,7 +66,7 @@ const AdminSideBar = () => {
             </svg>
             Create Admin
           </NavLink>
-        </li>
+        </li> */}
 
         <li>
           <NavLink

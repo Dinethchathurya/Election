@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Election_backend } from "declarations/Election_backend";
@@ -15,6 +13,7 @@ const CreateAdminPage = () => {
     register,
     setValue,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
@@ -26,37 +25,35 @@ const CreateAdminPage = () => {
         const identity = client.getIdentity();
         const principal = identity.getPrincipal().toText();
         sessionStorage.setItem("principal", principal);
-        setValue("internetId", principal); // ✅ Autofill input
-        setAdminPrincipal(principal);      // ✅ Set state
+        setValue("internetId", principal);
+        setAdminPrincipal(principal);
         setAuthClient(client);
         setIsAuthenticated(true);
       },
     });
   };
 
-  const logoutAfterSubmit = async () => {
+  const manualLogout = async () => {
     if (authClient) {
       await authClient.logout();
       sessionStorage.removeItem("principal");
       setAdminPrincipal(null);
       setIsAuthenticated(false);
-      setValue("internetId", "");
+      reset();
     }
   };
 
   const onSubmit = async (data) => {
     try {
       const principal = Principal.fromText(data.internetId);
-
       const response = await Election_backend.createElectionAdmin(
         principal,
         `${data.firstName} ${data.lastName}`
       );
-
       console.log("✅ Admin Created:", response);
       alert("✅ Admin Created Successfully!");
-
-      await logoutAfterSubmit(); // ✅ Logout after registration
+      reset();
+      setValue("internetId", adminPrincipal);
     } catch (err) {
       console.error("❌ Failed to create admin:", err);
       alert("Error: " + (err.message || "Unexpected error"));
@@ -65,95 +62,110 @@ const CreateAdminPage = () => {
 
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-body text-body">
-      <h2 className="mb-4 fw-bold text-body mt-4">Create Admin</h2>
+      <div className="card shadow-sm p-5 mt-4 mb-5 w-100" style={{ maxWidth: "720px" }}>
+        <h2 className="fw-bold text-center text-primary mb-4">🛂 Register New Admin</h2>
 
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="row g-4 p-4 bg-body text-body rounded shadow-sm"
-      >
-        {/* First Name */}
-        <div className="col-md-6">
-          <label className="form-label">First Name</label>
-          <input
-            className={`form-control ${errors.firstName ? "is-invalid" : ""}`}
-            {...register("firstName", { required: "First name is required" })}
-            placeholder="First Name"
-          />
-          {errors.firstName && <div className="invalid-feedback">{errors.firstName.message}</div>}
-        </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="row g-4">
+          {/* First Name */}
+          <div className="col-md-6">
+            <label className="form-label">First Name</label>
+            <input
+              className={`form-control ${errors.firstName ? "is-invalid" : ""}`}
+              {...register("firstName", { required: "First name is required" })}
+              placeholder="First Name"
+            />
+            {errors.firstName && <div className="invalid-feedback">{errors.firstName.message}</div>}
+          </div>
 
-        {/* Last Name */}
-        <div className="col-md-6">
-          <label className="form-label">Last Name</label>
-          <input
-            className={`form-control ${errors.lastName ? "is-invalid" : ""}`}
-            {...register("lastName", { required: "Last name is required" })}
-            placeholder="Last Name"
-          />
-          {errors.lastName && <div className="invalid-feedback">{errors.lastName.message}</div>}
-        </div>
+          {/* Last Name */}
+          <div className="col-md-6">
+            <label className="form-label">Last Name</label>
+            <input
+              className={`form-control ${errors.lastName ? "is-invalid" : ""}`}
+              {...register("lastName", { required: "Last name is required" })}
+              placeholder="Last Name"
+            />
+            {errors.lastName && <div className="invalid-feedback">{errors.lastName.message}</div>}
+          </div>
 
-        {/* Email */}
-        <div className="col-12">
-          <label className="form-label">Email</label>
-          <input
-            className={`form-control ${errors.email ? "is-invalid" : ""}`}
-            {...register("email", {
-              required: "Email is required",
-              pattern: { value: /^\S+@\S+$/, message: "Invalid email format" },
-            })}
-            placeholder="example@email.com"
-          />
-          {errors.email && <div className="invalid-feedback">{errors.email.message}</div>}
-        </div>
+          {/* Email */}
+          <div className="col-md-6">
+            <label className="form-label">Email</label>
+            <input
+              className={`form-control ${errors.email ? "is-invalid" : ""}`}
+              {...register("email", {
+                required: "Email is required",
+                pattern: { value: /^\S+@\S+$/, message: "Invalid email format" },
+              })}
+              placeholder="email@example.com"
+            />
+            {errors.email && <div className="invalid-feedback">{errors.email.message}</div>}
+          </div>
 
-        {/* Address */}
-        <div className="col-12">
-          <label className="form-label">Address</label>
-          <input
-            className={`form-control ${errors.address ? "is-invalid" : ""}`}
-            {...register("address", { required: "Address is required" })}
-            placeholder="Street, Building, etc."
-          />
-          {errors.address && <div className="invalid-feedback">{errors.address.message}</div>}
-        </div>
+          {/* Address */}
+          <div className="col-md-6">
+            <label className="form-label">Address</label>
+            <input
+              className={`form-control ${errors.address ? "is-invalid" : ""}`}
+              {...register("address", { required: "Address is required" })}
+              placeholder="Street, Building, etc."
+            />
+            {errors.address && <div className="invalid-feedback">{errors.address.message}</div>}
+          </div>
 
-        {/* Internet Identity Field */}
-        <div className="col-md-9">
-          <label className="form-label">Internet Identity</label>
-          <input
-            className={`form-control ${errors.internetId ? "is-invalid" : ""}`}
-            {...register("internetId", { required: "Internet Identity is required" })}
-            placeholder="Principal will be auto-filled after login"
-            readOnly
-          />
-          {errors.internetId && <div className="invalid-feedback">{errors.internetId.message}</div>}
-        </div>
+          {/* Internet Identity */}
+          <div className="col-md-9">
+            <label className="form-label">Internet Identity</label>
+            <input
+              readOnly
+              className={`form-control ${errors.internetId ? "is-invalid" : ""}`}
+              {...register("internetId", {
+                required: "Internet Identity is required",
+              })}
+              placeholder="Principal will be auto-filled after login"
+            />
+            {errors.internetId && <div className="invalid-feedback">{errors.internetId.message}</div>}
+          </div>
 
-        {/* Login Section */}
-        <div className="col-md-3 d-flex align-items-end">
-          {!isAuthenticated ? (
-            <button
-              type="button"
-              onClick={loginWithIdentity}
-              className="btn btn-outline-primary w-100"
-            >
-              🔐 Login with Internet Identity
+          {/* Login Section */}
+          <div className="col-md-3 d-flex align-items-end">
+            {!isAuthenticated ? (
+              <button
+                type="button"
+                onClick={loginWithIdentity}
+                className="btn btn-outline-primary w-100"
+              >
+                🔐 Login
+              </button>
+            ) : (
+              <div className="alert alert-success w-100 mb-0 p-2 text-break small">
+                Logged in as:<br />
+                <code>{adminPrincipal}</code>
+              </div>
+            )}
+          </div>
+
+          {/* Submit */}
+          <div className="col-12">
+            <button type="submit" className="btn btn-primary w-100 mt-2">
+              ✅ Register Admin
             </button>
-          ) : (
-            <div className="alert alert-success w-100 mb-0">
-              Logged in as: <code>{adminPrincipal}</code>
+          </div>
+
+          {/* Manual Logout */}
+          {isAuthenticated && (
+            <div className="col-12 text-end">
+              <button
+                onClick={manualLogout}
+                type="button"
+                className="btn btn-sm btn-link text-danger"
+              >
+                🔓 Logout
+              </button>
             </div>
           )}
-        </div>
-
-        {/* Submit */}
-        <div className="col-12">
-          <button type="submit" className="btn btn-primary">
-            Create Admin
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </main>
   );
 };
