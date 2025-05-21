@@ -1,8 +1,14 @@
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Election_backend } from "declarations/Election_backend";
 import { Principal } from "@dfinity/principal";
+import { AuthClient } from "@dfinity/auth-client";
 
 const CreateOfficer = () => {
+  const [officerId, setOfficerId] = useState(null);
+  const [authClient, setAuthClient] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -16,36 +22,70 @@ const CreateOfficer = () => {
     "Polonnaruwa", "Badulla", "Monaragala", "Ratnapura", "Kegalle",
   ];
 
+  const loginWithIdentity = async () => {
+    const client = await AuthClient.create();
+    await client.login({
+      identityProvider: "https://identity.ic0.app",
+      onSuccess: async () => {
+        const identity = client.getIdentity();
+        const principal = identity.getPrincipal().toText();
+        sessionStorage.setItem("principal", principal);
+        setOfficerId(principal);
+        setAuthClient(client);
+        setIsAuthenticated(true);
+      },
+    });
+  };
+
+  const logoutAfterSubmit = async () => {
+    if (authClient) {
+      await authClient.logout();
+      sessionStorage.removeItem("principal");
+      setOfficerId(null);
+      setIsAuthenticated(false);
+    }
+  };
+
+  useEffect(() => {
+    const loadSession = async () => {
+      const stored = sessionStorage.getItem("principal");
+      if (stored) {
+        setOfficerId(stored);
+        setIsAuthenticated(true);
+        const client = await AuthClient.create();
+        setAuthClient(client);
+      }
+    };
+    loadSession();
+  }, []);
+
   const onSubmit = async (data) => {
     try {
-      let storedElectionId = localStorage.getItem("electionId");
-      let electionId;
+      const storedElectionId =
+        localStorage.getItem("electionId") || "a4tbr-q4aaa-aaaaa-qaafq-cai";
+      const electionId = Principal.fromText(storedElectionId);
 
-      try {
-        electionId = Principal.fromText(
-          storedElectionId && storedElectionId.includes("-")
-            ? storedElectionId
-            : "a4tbr-q4aaa-aaaaa-qaafq-cai"
-        );
-      } catch {
-        console.warn("⚠️ Invalid electionId. Using fallback.");
-        electionId = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
+      if (!officerId) {
+        alert("❌ Please log in with Internet Identity first.");
+        return;
       }
 
-      const officerId = Principal.fromText(data.officerId);
-      const officerName = data.officerName;
+      const officerPrincipal = Principal.fromText(officerId);
 
       const response = await Election_backend.createElectionOfficer(
         electionId,
-        officerId,
-        officerName,
+        officerPrincipal,
+        data.officerName,
         data.pollingStation,
         data.pollingDivision,
         data.district
       );
 
       console.log("✅ Officer Created:", response);
-      alert("✅ Election Officer Created Successfully!");
+      alert("✅ Officer Created Successfully!");
+
+      // ✅ Logout after success
+      await logoutAfterSubmit();
     } catch (err) {
       console.error("❌ Failed to create officer:", err);
       alert("Error: " + (err.message || "Unexpected error occurred."));
@@ -60,30 +100,31 @@ const CreateOfficer = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="row g-4 p-4 bg-body text-body rounded shadow-sm"
       >
-        {/* Officer ID */}
-        <div className="col-md-6">
-          <label htmlFor="officerId" className="form-label">Election Officer ID</label>
-          <input
-            id="officerId"
-            className={`form-control ${errors.officerId ? "is-invalid" : ""}`}
-            placeholder="Enter Officer Principal ID"
-            {...register("officerId", { required: "Officer ID is required" })}
-          />
-          {errors.officerId && (
-            <div className="invalid-feedback">{errors.officerId.message}</div>
+        {/* Login Section */}
+        <div className="col-12">
+          {!isAuthenticated ? (
+            <button
+              type="button"
+              onClick={loginWithIdentity}
+              className="btn btn-outline-primary"
+            >
+              🔐 Login with Internet Identity
+            </button>
+          ) : (
+            <div className="alert alert-success">
+              Logged in as: <code>{officerId}</code>
+            </div>
           )}
         </div>
 
         {/* Officer Name */}
         <div className="col-md-6">
-          <label htmlFor="officerName" className="form-label">Election Officer Name</label>
+          <label htmlFor="officerName" className="form-label">Officer Name</label>
           <input
             id="officerName"
             className={`form-control ${errors.officerName ? "is-invalid" : ""}`}
             placeholder="Full Name"
-            {...register("officerName", {
-              required: "Officer name is required",
-            })}
+            {...register("officerName", { required: "Name is required" })}
           />
           {errors.officerName && (
             <div className="invalid-feedback">{errors.officerName.message}</div>
@@ -97,9 +138,7 @@ const CreateOfficer = () => {
             id="pollingStation"
             className={`form-control ${errors.pollingStation ? "is-invalid" : ""}`}
             placeholder="Station Name"
-            {...register("pollingStation", {
-              required: "Polling station is required",
-            })}
+            {...register("pollingStation", { required: "Polling station is required" })}
           />
           {errors.pollingStation && (
             <div className="invalid-feedback">{errors.pollingStation.message}</div>
@@ -113,9 +152,7 @@ const CreateOfficer = () => {
             id="pollingDivision"
             className={`form-control ${errors.pollingDivision ? "is-invalid" : ""}`}
             placeholder="Division Name"
-            {...register("pollingDivision", {
-              required: "Polling division is required",
-            })}
+            {...register("pollingDivision", { required: "Polling division is required" })}
           />
           {errors.pollingDivision && (
             <div className="invalid-feedback">{errors.pollingDivision.message}</div>
@@ -131,8 +168,8 @@ const CreateOfficer = () => {
             {...register("district", { required: "District is required" })}
           >
             <option value="">Choose District</option>
-            {districts.map((district, index) => (
-              <option key={index} value={district}>{district}</option>
+            {districts.map((d, i) => (
+              <option key={i} value={d}>{d}</option>
             ))}
           </select>
           {errors.district && (
