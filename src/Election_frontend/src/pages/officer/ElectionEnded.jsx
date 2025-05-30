@@ -47,7 +47,7 @@ const ElectionEnded = ({ setTheme }) => {
   };
 
   const handleConfirm = async () => {
-    await handleConfirm();
+    //await handleConfirm();
     try {
       const electionId = getElectionId();
       const result = await Election_backend.confirmResultsForOfficer(electionId);
