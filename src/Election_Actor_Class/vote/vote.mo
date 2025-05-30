@@ -4,130 +4,267 @@ import Principal "mo:base/Principal";
 import List "mo:base/List";
 import Type "../types/Type";
 import Nat32 "mo:base/Nat32";
+import Nat "mo:base/Nat";
 import Iter "mo:base/Iter";
+import Array "mo:base/Array";
+import CandidateModule "../users/candidate";
 
 module VoteModule {
-    
+
     public class VoteClass() {
 
         private var votesByOfficer = HashMap.HashMap<Principal, List.List<Type.Vote>>(1, Principal.equal, Principal.hash);
-        // Function to add a new vote for an election officer
-        // shared functions cannot use here because this is not inside actor class. i need to call this function inside actor class with msg as parameeter 
-        // public shared (msg) func addVote(firstChoice : Text, secondChoice : ?Text, thirdChoice : ?Text) : async Text {
-        //     let officerId = msg.caller; // Get the Principal of the election officer
+        //Function to add a new vote for an election officer
+        //shared functions cannot use here because this is not inside actor class. i need to call this function inside actor class with msg as parameeter
 
-        //     // Get the current list of votes for the officer (or an empty list if none exists)
-        //     let currentVotes = switch (votesByOfficer.get(officerId)) {
-        //         case (null) { List.nil<Type.Vote>() };
-        //         case (?votes) { votes };
-        //     };
+        public func addVote(officerId : Principal, firstChoice : Text, secondChoice : ?Text, thirdChoice : ?Text) : async Text {
+            let currentVotes = switch (votesByOfficer.get(officerId)) {
+                case (null) { List.nil<Type.Vote>() };
+                case (?votes) { votes };
+            };
 
-        //     // Calculate the previous vote hash (hash of the last vote in the list)
-        //     let previousVoteHash = switch (List.last(currentVotes)) {
-        //         case (null) { null };
-        //         case (?lastVote) { ?calculateHash(lastVote) };
-        //     };
+            // Properly destructure the head of the list
+            let previousVoteHash = switch (currentVotes) {
+                case (null) { null };
+                case (?(headVote, _)) { ?calculateHash(headVote) }; // ✅ FIXED
+            };
 
-        //     // Create the new vote
-        //     let newVote : Type.Vote = {
-        //         firstChoice = firstChoice;
-        //         secondChoice = secondChoice;
-        //         thirdChoice = thirdChoice;
-        //         previousVoteHash = previousVoteHash;
-        //     };
+            let newVote : Type.Vote = {
+                firstChoice = firstChoice;
+                secondChoice = secondChoice;
+                thirdChoice = thirdChoice;
+                previousVoteHash = previousVoteHash;
+            };
 
-        //     // Add the new vote to the list
-        //     let updatedVotes = List.push(newVote, currentVotes);
+            let updatedVotes = List.push(newVote, currentVotes);
+            votesByOfficer.put(officerId, updatedVotes);
 
-        //     // Update the HashMap with the new list of votes
-        //     votesByOfficer.put(officerId, updatedVotes);
-
-        //     // Return the hash of the new vote for verification
-        //     return calculateHash(newVote);
-        // };
+            return calculateHash(newVote);
+        };
 
         // Function to calculate the hash of a vote using Text.hash
         private func calculateHash(vote : Type.Vote) : Text {
             // Convert the vote to a string representation for hashing
             let voteString = Text.concat("firstChoice:", vote.firstChoice)
-                # "|secondChoice:" # debug_show(vote.secondChoice)
-                # "|thirdChoice:" # debug_show(vote.thirdChoice)
-                # "|previousVoteHash:" # debug_show(vote.previousVoteHash);
+            # "|secondChoice:" # debug_show (vote.secondChoice)
+            # "|thirdChoice:" # debug_show (vote.thirdChoice)
+            # "|previousVoteHash:" # debug_show (vote.previousVoteHash);
 
             // Calculate the hash using Text.hash
             let hash = Text.hash(voteString);
             return Nat32.toText(hash); // Convert Nat32 to Text for consistency
         };
+
         // Function to retrieve all votes for an election officer
         public func getVotes(officerId : Principal) : async [Type.Vote] {
             switch (votesByOfficer.get(officerId)) {
                 case (null) { [] }; // Return an empty array if no votes exist
                 case (?votes) { List.toArray(votes) }; // Convert the list to an array
-            }
+            };
         };
 
-        // Function to verify the integrity of the vote chain for an election officer
         public func verifyChain(officerId : Principal) : async Bool {
             let votes = switch (votesByOfficer.get(officerId)) {
-                case (null) { return false }; // No votes to verify
-                case (?votes) { votes };
+                case (null) { return false };
+                case (?v) { v };
             };
 
             var currentHash : ?Text = null;
-            var isValid = true;
 
-            // Convert the list of votes to an array for easier traversal
-            let voteArray = List.toArray(votes);
+            // Reverse to go oldest --> newest
+            let voteArray = List.toArray(List.reverse(votes));
 
-            // Traverse the array in reverse order (from newest to oldest)
             for (vote in voteArray.vals()) {
-                let calculatedHash = calculateHash(vote);
                 if (vote.previousVoteHash != currentHash) {
-                    isValid := false;
-                    return isValid; // Exit early if the chain is invalid
+                    return false;
                 };
-                currentHash := ?calculatedHash;
+                currentHash := ?calculateHash(vote);
             };
 
-            return isValid;
+            return true;
         };
 
-
-
         //results calculation process
-
-
         // HashMap to store the results for each election officer
 
-        private var resultsByOfficer = HashMap.HashMap<Principal, HashMap.HashMap<Text, List.List<Int>>>(
+        public var resultsByOfficer = HashMap.HashMap<Principal, HashMap.HashMap<Text, List.List<Int>>>(
             1, // Initial capacity
             Principal.equal, // Equality function for Principal
             Principal.hash // Hash function for Principal
         );
 
-        // this function refers wrong Hashmap and ai is confucing what i need to do. 
-        // SO I need to code from scrach to get the result of the election
+        public func calculateResultsForOfficer(officerId : Principal) {
+            let votes = switch (votesByOfficer.get(officerId)) {
+                case (null) return; // No votes to process
+                case (?list) list;
+            };
 
+            // Get or create inner map for this officer
+            let innerResults = switch (resultsByOfficer.get(officerId)) {
+                case (null) {
+                    let newMap = HashMap.HashMap<Text, List.List<Int>>(10, Text.equal, Text.hash);
+                    resultsByOfficer.put(officerId, newMap);
+                    newMap;
+                };
+                case (?existing) existing;
+            };
 
+            // Convert list to array
+            let votesArray = List.toArray(votes);
 
-        // shared functions cannot use here because this is not inside actor class. i need to call this function inside actor class with msg as parameeter 
+            for (vote in votesArray.vals()) {
+                // --- 1st Choice ---
+                updateCandidate(innerResults, vote.firstChoice, 0);
 
-        // public shared(msg) func calculateAndStoreResults(votes : [Type.Vote]) : async () {
-        //     let officerId = msg.caller; // Get the Principal ID of the election officer
+                // --- 2nd Choice ---
+                switch (vote.secondChoice) {
+                    case (?second) updateCandidate(innerResults, second, 1);
+                    case null {};
+                };
 
-        //     // Create or retrieve the inner HashMap for this officer
-        //     let innerHashMap = switch (resultsByOfficer.get(officerId)) {
-        //         case (null) {
-        //             // If no inner HashMap exists, create a new one
-        //             let newInnerHashMap = HashMap.HashMap<Text, List.List<Int>>(1, Text.equal, Text.hash);
-        //             resultsByOfficer.put(officerId, newInnerHashMap); // Store it in the outer HashMap
-        //             newInnerHashMap; // Return the new inner HashMap
-        //         };
-        //         case (?existingInnerHashMap) {
-        //             existingInnerHashMap; // Return the existing inner HashMap
-        //         };
-        //     };
-        // };
-        
+                // --- 3rd Choice ---
+                switch (vote.thirdChoice) {
+                    case (?third) updateCandidate(innerResults, third, 2);
+                    case null {};
+                };
+            };
+        };
+
+        // Updates the vote count for a candidate at a specific index
+        // Update the candidate result at a particular vote index
+        private func updateCandidate(
+            innerMap : HashMap.HashMap<Text, List.List<Int>>,
+            name : Text,
+            index : Nat,
+        ) {
+            let list = switch (innerMap.get(name)) {
+                case (null) {
+                    let fresh = initializeList();
+                    innerMap.put(name, fresh);
+                    fresh;
+                };
+                case (?existing) existing;
+            };
+
+            // ✅ Properly get the current value at index
+            let currentCount = getAtIndex(list, index);
+            let updated = replaceNth(list, index, currentCount + 1);
+            innerMap.put(name, updated);
+        };
+
+        // Return list with 3 zeroes for [first, second, third]
+        private func initializeList() : List.List<Int> {
+            return List.push(0, List.push(0, List.push(0, List.nil<Int>())));
+        };
+
+        // Replace the element at index `idx` with `newVal`
+        private func replaceNth(l : List.List<Int>, idx : Nat, newVal : Int) : List.List<Int> {
+            var result = List.nil<Int>();
+            var current = l;
+            var i = 0;
+
+            while (List.size(current) > 0) {
+                switch (current) {
+                    case (?(head, tail)) {
+                        if (i == idx) {
+                            result := List.push(newVal, result);
+                        } else {
+                            result := List.push(head, result);
+                        };
+                        current := tail;
+                        i += 1;
+                    };
+                    case null {}; // ✅ Explicitly handle null case even though it should never happen
+                };
+            };
+
+            return List.reverse(result);
+        };
+
+        // ✅ Safe function to get value at index
+        private func getAtIndex(l : List.List<Int>, idx : Nat) : Int {
+            var current = l;
+            var i = 0;
+
+            while (List.size(current) > 0) {
+                switch (current) {
+                    case (?(head, tail)) {
+                        if (i == idx) {
+                            return head;
+                        };
+                        current := tail;
+                        i += 1;
+                    };
+                    case null {}; // ✅ Required by compiler: handle all variants
+                };
+            };
+
+            return 0; // Default if index is out of bounds
+        };
+
+        public func getResultsForOfficer(officerId : Principal) : async [(Text, [Int])] {
+            switch (resultsByOfficer.get(officerId)) {
+                case null {
+                    return []; // No results for this officer
+                };
+                case (?innerMap) {
+                    var results : [(Text, [Int])] = [];
+
+                    for ((candidate, list) in innerMap.entries()) {
+                        // Convert the List<List<Int>> to [Int]
+                        let voteList = List.toArray(list);
+                        let first = if (voteList.size() > 0) voteList[0] else 0;
+                        let second = if (voteList.size() > 1) voteList[1] else 0;
+                        let third = if (voteList.size() > 2) voteList[2] else 0;
+
+                        results := Array.append(results, [(candidate, [first, second, third])]);
+                    };
+
+                    return results;
+                };
+            };
+        };
+
+        public func confirmResultsForOfficer(
+            officerId : Principal,
+            candidateClass : CandidateModule.CandidateClass,
+        ) : async Text {
+            switch (resultsByOfficer.get(officerId)) {
+                case null {
+                    return "❌ No results found for this officer.";
+                };
+                case (?innerMap) {
+                    for ((candidateName, voteList) in innerMap.entries()) {
+                        let votesArray = List.toArray(voteList);
+                        let first = if (votesArray.size() > 0) votesArray[0] else 0;
+                        let second = if (votesArray.size() > 1) votesArray[1] else 0;
+                        let third = if (votesArray.size() > 2) votesArray[2] else 0;
+
+                        let candidate = candidateClass.getElectionCandidates(candidateName);
+
+                        if (candidate.nameEn != "not found") {
+                            let updatedCandidate : Type.ElectionCandidate = {
+                                nameEn = candidate.nameEn;
+                                nameSi = candidate.nameSi;
+                                nameTa = candidate.nameTa;
+                                hisParty = candidate.hisParty;
+                                hisSymbol = candidate.hisSymbol;
+                                voteCountAsFirstChoice = Nat32.toNat(Nat32.fromIntWrap(first));
+                                voteCountAsSecondChoice = Nat32.toNat(Nat32.fromIntWrap(second));
+                                voteCountAsThirdChoice = Nat32.toNat(Nat32.fromIntWrap(third));
+                            };
+
+                            ignore candidateClass.updateElectionCandidate(updatedCandidate);
+                        };
+                    };
+                    return "✅ Results confirmed and candidates updated.";
+                };
+            };
+        }
+
     };
+
+    // End of VoteModule
+    // Return results as [(candidateName, [firstVotes, secondVotes, thirdVotes])]
+
 };

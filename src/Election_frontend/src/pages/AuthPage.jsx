@@ -1,107 +1,182 @@
-import React, { useState, useEffect } from 'react';
-import { AuthClient } from '@dfinity/auth-client';
-import { createActor } from 'declarations/Election_backend';
-import { canisterId } from 'declarations/Election_backend/index.js';
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { Election_backend } from "declarations/Election_backend";
+import { Principal } from "@dfinity/principal";
+import { AuthClient } from "@dfinity/auth-client";
 
-const network = process.env.DFX_NETWORK;
-const identityProvider =
-  network === 'ic'
-    ? 'https://identity.ic0.app' // Mainnet
-    : 'http://br5f7-7uaaa-aaaaa-qaaca-cai.localhost:4943/'; // Local
+const CreateAdminPage = () => {
+  const [authClient, setAuthClient] = useState(null);
+  const [adminPrincipal, setAdminPrincipal] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
 
-const AuthPage = () => {
-  const [state, setState] = useState({
-    actor: undefined,
-    authClient: undefined,
-    isAuthenticated: false,
-    principal: 'Click "Whoami" to see your principal ID'
-  });
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
+  // 🚨 Protected route check
   useEffect(() => {
-    // Load any saved principal from sessionStorage
-    const savedPrincipal = sessionStorage.getItem("principal");
-    if (savedPrincipal) {
-      setState((prev) => ({
-        ...prev,
-        principal: savedPrincipal
-      }));
+    const checkAuth = async () => {
+      const client = await AuthClient.create();
+      const isAuth = await client.isAuthenticated();
+      if (!isAuth) {
+        navigate("/auth");
+        return;
+      }
+
+      const principal = client.getIdentity().getPrincipal().toText();
+      sessionStorage.setItem("principal", principal);
+      setAdminPrincipal(principal);
+      setAuthClient(client);
+      setIsAuthenticated(true);
+      setValue("internetId", principal);
+    };
+
+    checkAuth();
+  }, [navigate, setValue]);
+
+  const loginWithIdentity = async () => {
+    const client = await AuthClient.create();
+    await client.login({
+      identityProvider: "https://identity.ic0.app",
+      onSuccess: async () => {
+        const identity = client.getIdentity();
+        const principal = identity.getPrincipal().toText();
+        sessionStorage.setItem("principal", principal);
+        setValue("internetId", principal);
+        setAdminPrincipal(principal);
+        setAuthClient(client);
+        setIsAuthenticated(true);
+        navigate("/"); // Redirect on login
+      },
+    });
+  };
+
+  const logoutAfterSubmit = async () => {
+    if (authClient) {
+      await authClient.logout();
+      sessionStorage.removeItem("principal");
+      setAdminPrincipal(null);
+      setIsAuthenticated(false);
+      setValue("internetId", "");
+      navigate("/auth"); // Back to login
     }
-    updateActor();
-  }, []);
-
-  const updateActor = async () => {
-    const authClient = await AuthClient.create();
-    const identity = authClient.getIdentity();
-    const actor = createActor(canisterId, {
-      agentOptions: { identity }
-    });
-    const isAuthenticated = await authClient.isAuthenticated();
-
-    setState((prev) => ({
-      ...prev,
-      actor,
-      authClient,
-      isAuthenticated
-    }));
   };
 
-  const login = async () => {
-    await state.authClient.login({
-      identityProvider,
-      onSuccess: updateActor
-    });
-  };
-
-  const logout = async () => {
-    await state.authClient.logout();
-    sessionStorage.removeItem("principal"); // ❌ Clear session on logout
-    updateActor();
-  };
-
-  const whoami = async () => {
-    setState((prev) => ({
-      ...prev,
-      principal: 'Loading...'
-    }));
-
-    const result = await state.actor.whoami();
-    const principal = result.toString();
-
-    // ✅ Store in sessionStorage
-    sessionStorage.setItem("principal", principal);
-
-    setState((prev) => ({
-      ...prev,
-      principal
-    }));
+  const onSubmit = async (data) => {
+    try {
+      const principal = Principal.fromText(data.internetId);
+      const response = await Election_backend.createElectionAdmin(
+        principal,
+        `${data.firstName} ${data.lastName}`
+      );
+      console.log("✅ Admin Created:", response);
+      alert("✅ Admin Created Successfully!");
+      await logoutAfterSubmit(); // logout and redirect
+    } catch (err) {
+      console.error("❌ Failed to create admin:", err);
+      alert("Error: " + (err.message || "Unexpected error"));
+    }
   };
 
   return (
-    <div className="container mt-5">
-      <h1 className="mb-4">Who Am I?</h1>
+    <div className="container d-flex justify-content-center align-items-center min-vh-100">
+      <div className="card shadow-sm p-5 w-100" style={{ maxWidth: "720px" }}>
+        <h2 className="fw-bold text-center text-primary mb-4">🛂 Register New Admin</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="row g-4">
+          {/* First Name */}
+          <div className="col-md-6">
+            <label className="form-label">First Name</label>
+            <input
+              className={`form-control ${errors.firstName ? "is-invalid" : ""}`}
+              {...register("firstName", { required: "First name is required" })}
+              placeholder="First Name"
+            />
+            {errors.firstName && <div className="invalid-feedback">{errors.firstName.message}</div>}
+          </div>
 
-      {!state.isAuthenticated ? (
-        <button className="btn btn-primary me-3" onClick={login}>
-          Login with Internet Identity
-        </button>
-      ) : (
-        <button className="btn btn-danger me-3" onClick={logout}>
-          Logout
-        </button>
-      )}
+          {/* Last Name */}
+          <div className="col-md-6">
+            <label className="form-label">Last Name</label>
+            <input
+              className={`form-control ${errors.lastName ? "is-invalid" : ""}`}
+              {...register("lastName", { required: "Last name is required" })}
+              placeholder="Last Name"
+            />
+            {errors.lastName && <div className="invalid-feedback">{errors.lastName.message}</div>}
+          </div>
 
-      <button className="btn btn-secondary" onClick={whoami}>
-        Whoami
-      </button>
+          {/* Email */}
+          <div className="col-md-6">
+            <label className="form-label">Email</label>
+            <input
+              className={`form-control ${errors.email ? "is-invalid" : ""}`}
+              {...register("email", {
+                required: "Email is required",
+                pattern: { value: /^\S+@\S+$/, message: "Invalid email format" },
+              })}
+              placeholder="email@example.com"
+            />
+            {errors.email && <div className="invalid-feedback">{errors.email.message}</div>}
+          </div>
 
-      {state.principal && (
-        <div className="mt-4">
-          <h4>Your principal ID:</h4>
-          <pre>{state.principal}</pre>
-        </div>
-      )}
+          {/* Address */}
+          <div className="col-md-6">
+            <label className="form-label">Address</label>
+            <input
+              className={`form-control ${errors.address ? "is-invalid" : ""}`}
+              {...register("address", { required: "Address is required" })}
+              placeholder="Street, Building, etc."
+            />
+            {errors.address && <div className="invalid-feedback">{errors.address.message}</div>}
+          </div>
+
+          {/* Internet Identity */}
+          <div className="col-md-9">
+            <label className="form-label">Internet Identity</label>
+            <input
+              readOnly
+              className={`form-control ${errors.internetId ? "is-invalid" : ""}`}
+              {...register("internetId", {
+                required: "Internet Identity is required",
+              })}
+              placeholder="Principal will be auto-filled after login"
+            />
+            {errors.internetId && <div className="invalid-feedback">{errors.internetId.message}</div>}
+          </div>
+
+          {/* Login/Identity Display */}
+          <div className="col-md-3 d-flex align-items-end">
+            {!isAuthenticated ? (
+              <button
+                type="button"
+                onClick={loginWithIdentity}
+                className="btn btn-outline-primary w-100"
+              >
+                🔐 Login
+              </button>
+            ) : (
+              <div className="alert alert-success w-100 mb-0 p-2 text-break small">
+                Logged in as:<br />
+                <code>{adminPrincipal}</code>
+              </div>
+            )}
+          </div>
+
+          {/* Submit */}
+          <div className="col-12">
+            <button type="submit" className="btn btn-primary w-100 mt-2">
+              ✅ Register Admin
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
 
-export default AuthPage;
+export default CreateAdminPage;

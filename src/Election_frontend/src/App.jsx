@@ -1,8 +1,60 @@
+// import { useEffect } from "react";
+// import { Routes, Route } from "react-router-dom";
+// import AdminHomePage from "./pages/admin/AdminLayout";
+// import BallotPaper from "./pages/officer/BallotPaper";
+// import AuthPage from "./pages/AuthPage";
+// import ElectionEnded from "./pages/officer/ElectionEnded";
+// import UserHomePage from "./pages/user/UserHomePage";
+// import { Result } from "postcss";
+// import ResultPage from "./pages/user/ResultPage";
+
+// function App() {
+//   useEffect(() => {
+//     const storedTheme = localStorage.getItem("theme") || "auto";
+//     setTheme(storedTheme);
+//   }, []);
+
+//   const setTheme = (theme) => {
+//     if (theme === "auto") {
+//       document.documentElement.removeAttribute("data-bs-theme");
+//     } else {
+//       document.documentElement.setAttribute("data-bs-theme", theme);
+//     }
+//     localStorage.setItem("theme", theme);
+//   };
+
+//   return (
+//     <Routes>
+//       {/* Admin dashboard layout */}
+
+//       <Route path="/home" element={<UserHomePage setTheme={setTheme} />}></Route>
+//       <Route path="/ballotPaper" element={<BallotPaper setTheme={setTheme} />}></Route>
+//       <Route path="/auth" element={<AuthPage setTheme={setTheme} />}></Route>
+//       <Route path="/end" element={<ElectionEnded setTheme={setTheme} />}></Route>
+//       <Route path="/resultPage" element={<ResultPage setTheme={setTheme} />}></Route>
+
+//       {/* admin */}
+//       <Route path="/*" element={<AdminHomePage setTheme={setTheme} />}>
+//         {/* Nested routes inside Admin Layout */}
+//       </Route>
+//     </Routes>
+
+//   );
+// }
+
+// export default App;
+
+
+
 import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import AdminHomePage from "./pages/admin/AdminLayout";
 import BallotPaper from "./pages/officer/BallotPaper";
 import AuthPage from "./pages/AuthPage";
+import ElectionEnded from "./pages/officer/ElectionEnded";
+import UserHomePage from "./pages/user/UserHomePage";
+import ResultPage from "./pages/user/ResultPage";
+import ProtectedRoute from "./components/ProtectedRoute"; // 👈 import the new file
 
 function App() {
   useEffect(() => {
@@ -21,115 +73,53 @@ function App() {
 
   return (
     <Routes>
-      {/* Admin dashboard layout */}
-      <Route path="/*" element={<AdminHomePage setTheme={setTheme} />}>
-        {/* Nested routes inside Admin Layout */}
-      </Route>
-      <Route path="/ballotPaper" element={<BallotPaper setTheme={setTheme} />}>
-        {/* Nested routes inside Admin Layout */}
-      </Route>
-      <Route path="/auth" element={<AuthPage setTheme={setTheme} />}></Route>
-      
-      
+      <Route path="/auth" element={<AuthPage setTheme={setTheme} />} />
+
+      {/* 🔐 Protected Routes */}
+      <Route
+        path="/home"
+        element={
+          <ProtectedRoute>
+            <UserHomePage setTheme={setTheme} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/ballotPaper"
+        element={
+          <ProtectedRoute>
+            <BallotPaper setTheme={setTheme} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/end"
+        element={
+          <ProtectedRoute>
+            <ElectionEnded setTheme={setTheme} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/resultPage"
+        element={
+          <ProtectedRoute>
+            <ResultPage setTheme={setTheme} />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* admin dashboard also protected */}
+      <Route
+        path="/*"
+        element={
+          <ProtectedRoute>
+            <AdminHomePage setTheme={setTheme} />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
 
 export default App;
-
-
-
-
-
-
-
-
-
-
-// import React, { useState, useEffect } from 'react';
-// import { AuthClient } from '@dfinity/auth-client';
-// // import { createActor } from 'declarations/backend';
-// import { createActor } from 'declarations/Election_backend';
-
-// import { canisterId } from 'declarations/Election_backend/index.js';
-
-// const network = process.env.DFX_NETWORK;
-// const identityProvider =
-//   network === 'ic'
-//     ? 'https://identity.ic0.app' // Mainnet
-//     : 'http://br5f7-7uaaa-aaaaa-qaaca-cai.localhost:4943/'; // Local
-
-// const App = () => {
-//   const [state, setState] = useState({
-//     actor: undefined,
-//     authClient: undefined,
-//     isAuthenticated: false,
-//     principal: 'Click "Whoami" to see your principal ID'
-//   });
-
-//   useEffect(() => {
-//     updateActor();
-//   }, []);
-
-//   const updateActor = async () => {
-//     const authClient = await AuthClient.create();
-//     const identity = authClient.getIdentity();
-//     const actor = createActor(canisterId, {
-//       agentOptions: { identity }
-//     });
-//     const isAuthenticated = await authClient.isAuthenticated();
-
-//     setState((prev) => ({
-//       ...prev,
-//       actor,
-//       authClient,
-//       isAuthenticated
-//     }));
-//   };
-
-//   const login = async () => {
-//     await state.authClient.login({
-//       identityProvider,
-//       onSuccess: updateActor
-//     });
-//   };
-
-//   const logout = async () => {
-//     await state.authClient.logout();
-//     updateActor();
-//   };
-
-//   const whoami = async () => {
-//     setState((prev) => ({
-//       ...prev,
-//       principal: 'Loading...'
-//     }));
-
-//     const result = await state.actor.whoami();
-//     const principal = result.toString();
-//     setState((prev) => ({
-//       ...prev,
-//       principal
-//     }));
-//   };
-
-//   return (
-//     <div>
-//       <h1>Who Am I?</h1>
-//       {!state.isAuthenticated ? (
-//         <button onClick={login}>Login with Internet Identity</button>
-//       ) : (
-//         <button onClick={logout}>Logout</button>
-//       )}
-//       <button onClick={whoami}>Whoami</button>
-//       {state.principal && (
-//         <div>
-//           <h2>Your principal ID is:</h2>
-//           <h4>{state.principal}</h4>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default App;

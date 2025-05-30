@@ -7,46 +7,42 @@ const CreateCandidatePage = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm();
 
-
 const onSubmit = async (data) => {
-  console.log("Candidate Submitted:", data);
-
   try {
-    // Validate and convert the electionId
+    // Attempt to get the election ID from localStorage
+    const storedElectionId = localStorage.getItem("electionId");
     let electionId;
+
     try {
-      electionId = Principal.fromText(data.electionId.trim());
-      console.log("✅ Election ID is a valid Principal:", electionId.toText());
-    } catch (convError) {
-      console.error("❌ Invalid Election ID:", data.electionId);
-      alert("Invalid Election Canister ID. Please check the format.");
-      return;
+      electionId = Principal.fromText(
+        storedElectionId && storedElectionId.includes("-")
+          ? storedElectionId
+          : "a4tbr-q4aaa-aaaaa-qaafq-cai"
+      );
+    } catch (idError) {
+      console.warn("⚠️ Invalid electionId in localStorage. Using fallback.");
+      electionId = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai");
     }
 
-    const candidateName = data.candidateName.trim();
-    const candidateParty = data.candidateParty.trim();
-
-    console.log("Candidate Name:", candidateName);
-    console.log("Candidate Party:", candidateParty);
-
-    const result = await Election_backend.createCandidate(
+    // Call the backend to create the candidate
+    const response = await Election_backend.createCandidate(
       electionId,
-      candidateName,
-      candidateParty
+      data.candidateNameEn,
+      data.candidateNameSi,
+      data.candidateNameTa,
+      data.candidateParty,
+      data.candidateSymbol
     );
 
-    console.log("Candidate creation result:", result);
-    alert("✅ Candidate created successfully!");
-    reset();
-  } catch (e) {
-    console.error("❌ Error creating candidate:", e);
-    alert("Failed to create candidate: " + e.message);
+    console.log("✅ Candidate Created:", response);
+    alert("✅ Candidate Created Successfully!");
+  } catch (err) {
+    console.error("❌ Failed to create candidate:", err);
+    alert("Error: " + (err.message || "Unexpected error occurred."));
   }
 };
-
   return (
     <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 bg-body text-body">
       <h2 className="mb-4 fw-bold text-body mt-4">Create Candidate</h2>
@@ -55,82 +51,102 @@ const onSubmit = async (data) => {
         onSubmit={handleSubmit(onSubmit)}
         className="row g-4 p-4 bg-body text-body rounded shadow-sm"
       >
-        {/* Candidate Name */}
-        <div className="col-md-8">
-          <label htmlFor="candidateName" className="form-label">
-            Candidate Name
+        {/* Candidate Name - English */}
+        <div className="col-md-6">
+          <label htmlFor="candidateNameEn" className="form-label">
+            Candidate Name (English)
           </label>
           <input
-            type="text"
-            id="candidateName"
-            className={`form-control ${errors.candidateName ? "is-invalid" : ""}`}
-            placeholder="Enter full name"
-            {...register("candidateName", {
-              required: "Candidate name is required",
-              minLength: {
-                value: 2,
-                message: "Must be at least 2 characters",
-              },
-            })}
+            id="candidateNameEn"
+            className={`form-control ${errors.candidateNameEn ? "is-invalid" : ""}`}
+            placeholder="e.g., Dineth"
+            {...register("candidateNameEn", { required: "English name is required" })}
           />
-          {errors.candidateName && (
-            <div className="invalid-feedback">
-              {errors.candidateName.message}
-            </div>
+          {errors.candidateNameEn && (
+            <div className="invalid-feedback">{errors.candidateNameEn.message}</div>
           )}
         </div>
 
-        {/* Election ID */}
-        <div className="col-md-8">
-          <label htmlFor="electionId" className="form-label">
-            Election ID
+        {/* Candidate Name - Sinhala */}
+        <div className="col-md-6">
+          <label htmlFor="candidateNameSi" className="form-label">
+            Candidate Name (Sinhala)
           </label>
           <input
-            type="text"
-            id="electionId"
-            className={`form-control ${errors.electionId ? "is-invalid" : ""}`}
-            placeholder="Enter canister ID"
-            {...register("electionId", {
-              required: "Election ID is required",
-              minLength: {
-                value: 2,
-                message: "Must be at least 2 characters",
-              },
-            })}
+            id="candidateNameSi"
+            className={`form-control ${errors.candidateNameSi ? "is-invalid" : ""}`}
+            placeholder="e.g., දිනේත්"
+            {...register("candidateNameSi", { required: "Sinhala name is required" })}
           />
-          {errors.electionId && (
-            <div className="invalid-feedback">
-              {errors.electionId.message}
-            </div>
+          {errors.candidateNameSi && (
+            <div className="invalid-feedback">{errors.candidateNameSi.message}</div>
           )}
         </div>
 
-        {/* Candidate Party */}
-        <div className="col-md-8">
+        {/* Candidate Name - Tamil */}
+        <div className="col-md-6">
+          <label htmlFor="candidateNameTa" className="form-label">
+            Candidate Name (Tamil)
+          </label>
+          <input
+            id="candidateNameTa"
+            className={`form-control ${errors.candidateNameTa ? "is-invalid" : ""}`}
+            placeholder="e.g., தினேத்"
+            {...register("candidateNameTa", { required: "Tamil name is required" })}
+          />
+          {errors.candidateNameTa && (
+            <div className="invalid-feedback">{errors.candidateNameTa.message}</div>
+          )}
+        </div>
+
+        {/* NIC Number */}
+        <div className="col-md-6">
+          <label htmlFor="nic" className="form-label">
+            NIC Number
+          </label>
+          <input
+            id="nic"
+            className={`form-control ${errors.nic ? "is-invalid" : ""}`}
+            placeholder="Enter NIC Number"
+            {...register("nic", { required: "NIC number is required" })}
+          />
+          {errors.nic && (
+            <div className="invalid-feedback">{errors.nic.message}</div>
+          )}
+        </div>
+
+        {/* Political Party */}
+        <div className="col-md-6">
           <label htmlFor="candidateParty" className="form-label">
             Political Party
           </label>
           <input
-            type="text"
             id="candidateParty"
             className={`form-control ${errors.candidateParty ? "is-invalid" : ""}`}
-            placeholder="Enter party name"
-            {...register("candidateParty", {
-              required: "Political party is required",
-              minLength: {
-                value: 2,
-                message: "Must be at least 2 characters",
-              },
-            })}
+            placeholder="e.g., Future Vision Party"
+            {...register("candidateParty", { required: "Party name is required" })}
           />
           {errors.candidateParty && (
-            <div className="invalid-feedback">
-              {errors.candidateParty.message}
-            </div>
+            <div className="invalid-feedback">{errors.candidateParty.message}</div>
           )}
         </div>
 
-        {/* Submit Button */}
+        {/* Political Symbol */}
+        <div className="col-md-6">
+          <label htmlFor="candidateSymbol" className="form-label">
+            Political Symbol
+          </label>
+          <input
+            id="candidateSymbol"
+            className={`form-control ${errors.candidateSymbol ? "is-invalid" : ""}`}
+            placeholder="e.g., ⚡, 🐘"
+            {...register("candidateSymbol", { required: "Symbol is required" })}
+          />
+          {errors.candidateSymbol && (
+            <div className="invalid-feedback">{errors.candidateSymbol.message}</div>
+          )}
+        </div>
+
         <div className="col-12">
           <button type="submit" className="btn btn-primary">
             Create Candidate
